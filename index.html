@@ -1,460 +1,507 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plantões API — Documentação v1</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0b0f1a;
-    --surface: #111827;
-    --surface2: #1a2236;
-    --border: #1f2d45;
-    --accent: #00d4aa;
-    --accent2: #3b82f6;
-    --warn: #f59e0b;
-    --danger: #ef4444;
-    --success: #10b981;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Sora', sans-serif;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plantões API — Documentação v1</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --surface: #111827;
+      --surface2: #1a2236;
+      --border: #1f2d45;
+      --accent: #00d4aa;
+      --accent2: #3b82f6;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Sora', sans-serif;
+    }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
 
-  /* ── Layout ── */
-  .layout { display: flex; min-height: 100vh; }
+    .layout { display: flex; min-height: 100vh; }
 
-  /* ── Sidebar ── */
-  .sidebar {
-    width: 260px;
-    min-width: 260px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    padding: 0 0 32px;
-  }
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 0 0 32px;
+    }
 
-  .sidebar-logo {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 8px;
-  }
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
 
-  .sidebar-logo h1 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: -0.5px;
-  }
+    .sidebar-logo h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
 
-  .sidebar-logo span {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    background: var(--surface2);
-    padding: 2px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    margin-top: 6px;
-  }
+    .sidebar-logo span {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 6px;
+    }
 
-  .sidebar-section {
-    padding: 8px 20px 4px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 12px;
-  }
+    .sidebar-section {
+      padding: 8px 20px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 12px;
+    }
 
-  .sidebar a {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 20px;
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 13px;
-    transition: all 0.15s;
-    border-left: 2px solid transparent;
-  }
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 20px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+    }
 
-  .sidebar a:hover { color: var(--text); background: var(--surface2); }
-  .sidebar a.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,212,170,0.05); }
+    .sidebar a:hover { color: var(--text); background: var(--surface2); }
+    .sidebar a.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,212,170,0.05); }
 
-  .method-badge {
-    font-family: var(--mono);
-    font-size: 9px;
-    font-weight: 700;
-    padding: 2px 5px;
-    border-radius: 3px;
-    min-width: 36px;
-    text-align: center;
-  }
-  .get  { background: rgba(16,185,129,0.15); color: #10b981; }
-  .post { background: rgba(59,130,246,0.15); color: #3b82f6; }
+    .method-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 3px;
+      min-width: 36px;
+      text-align: center;
+    }
+    .get  { background: rgba(16,185,129,0.15); color: #10b981; }
+    .post { background: rgba(59,130,246,0.15); color: #3b82f6; }
 
-  /* ── Main ── */
-  .main {
-    flex: 1;
-    padding: 48px 56px;
-    max-width: 900px;
-  }
+    .main {
+      flex: 1;
+      padding: 48px 56px;
+      max-width: 900px;
+    }
 
-  /* ── Hero ── */
-  .hero {
-    margin-bottom: 56px;
-    padding-bottom: 40px;
-    border-bottom: 1px solid var(--border);
-  }
+    .hero {
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
 
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    background: rgba(0,212,170,0.1);
-    border: 1px solid rgba(0,212,170,0.2);
-    padding: 4px 12px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 16px;
-  }
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(0,212,170,0.1);
+      border: 1px solid rgba(0,212,170,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
 
-  .hero h1 {
-    font-size: 36px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    line-height: 1.1;
-    margin-bottom: 12px;
-  }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
 
-  .hero h1 span { color: var(--accent); }
+    .hero h1 span { color: var(--accent); }
 
-  .hero p {
-    color: var(--muted);
-    font-size: 15px;
-    max-width: 540px;
-    margin-bottom: 24px;
-  }
+    .hero p {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 540px;
+      margin-bottom: 24px;
+    }
 
-  .hero-meta {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
+    .hero-meta { display: flex; gap: 24px; flex-wrap: wrap; }
 
-  .meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
 
-  .meta-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--muted);
-  }
+    .meta-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+    }
 
-  .meta-value {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text);
-  }
+    .meta-value {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+    }
 
-  /* ── Section ── */
-  .section { margin-bottom: 64px; }
+    .section { margin-bottom: 64px; }
 
-  .section-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 4px;
-    color: var(--text);
-  }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
 
-  .section-desc {
-    color: var(--muted);
-    font-size: 13px;
-    margin-bottom: 28px;
-  }
+    .section-desc {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
 
-  /* ── Endpoint Card ── */
-  .endpoint {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
+    .endpoint {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
 
-  .endpoint:hover { border-color: #2a3f60; }
+    .endpoint:hover { border-color: #2a3f60; }
 
-  .endpoint-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    cursor: pointer;
-    user-select: none;
-  }
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
 
-  .endpoint-header:hover { background: var(--surface2); }
+    .endpoint-header:hover { background: var(--surface2); }
 
-  .method-pill {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 5px;
-    min-width: 50px;
-    text-align: center;
-  }
+    .method-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 5px;
+      min-width: 50px;
+      text-align: center;
+    }
 
-  .endpoint-path {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--text);
-    flex: 1;
-  }
+    .endpoint-path {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--text);
+      flex: 1;
+    }
 
-  .endpoint-desc {
-    font-size: 12px;
-    color: var(--muted);
-  }
+    .endpoint-desc { font-size: 12px; color: var(--muted); }
 
-  .auth-badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: rgba(245,158,11,0.12);
-    color: var(--warn);
-    border: 1px solid rgba(245,158,11,0.2);
-    white-space: nowrap;
-  }
+    .auth-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(245,158,11,0.12);
+      color: var(--warn);
+      border: 1px solid rgba(245,158,11,0.2);
+      white-space: nowrap;
+    }
 
-  .public-badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: rgba(16,185,129,0.1);
-    color: var(--success);
-    border: 1px solid rgba(16,185,129,0.2);
-    white-space: nowrap;
-  }
+    .apikey-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(139,92,246,0.12);
+      color: #a78bfa;
+      border: 1px solid rgba(139,92,246,0.2);
+      white-space: nowrap;
+    }
 
-  .chevron {
-    color: var(--muted);
-    font-size: 12px;
-    transition: transform 0.2s;
-  }
+    .public-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(16,185,129,0.1);
+      color: var(--success);
+      border: 1px solid rgba(16,185,129,0.2);
+      white-space: nowrap;
+    }
 
-  .endpoint.open .chevron { transform: rotate(90deg); }
+    .chevron {
+      color: var(--muted);
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
 
-  .endpoint-body {
-    display: none;
-    padding: 0 20px 20px;
-    border-top: 1px solid var(--border);
-  }
+    .endpoint.open .chevron { transform: rotate(90deg); }
 
-  .endpoint.open .endpoint-body { display: block; }
+    .endpoint-body {
+      display: none;
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border);
+    }
 
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    gap: 0;
-    margin: 16px 0 0;
-    border-bottom: 1px solid var(--border);
-  }
+    .endpoint.open .endpoint-body { display: block; }
 
-  .tab-btn {
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 8px 16px;
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.15s;
-  }
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin: 16px 0 0;
+      border-bottom: 1px solid var(--border);
+    }
 
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-btn:hover:not(.active) { color: var(--text); }
+    .tab-btn {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.15s;
+    }
 
-  .tab-panel { display: none; padding-top: 16px; }
-  .tab-panel.active { display: block; }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-btn:hover:not(.active) { color: var(--text); }
 
-  /* ── Code Block ── */
-  pre {
-    background: #080d16;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    overflow-x: auto;
-    font-family: var(--mono);
-    font-size: 12.5px;
-    line-height: 1.7;
-    color: #cdd6f4;
-  }
+    .tab-panel { display: none; padding-top: 16px; }
+    .tab-panel.active { display: block; }
 
-  .kw  { color: #cba6f7; }
-  .str { color: #a6e3a1; }
-  .num { color: #fab387; }
-  .key { color: #89b4fa; }
-  .cmt { color: #585b70; }
-  .bool { color: #f38ba8; }
+    pre {
+      background: #080d16;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: #cdd6f4;
+    }
 
-  /* ── Table ── */
-  .params-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 4px;
-  }
+    .kw  { color: #cba6f7; }
+    .str { color: #a6e3a1; }
+    .num { color: #fab387; }
+    .key { color: #89b4fa; }
+    .cmt { color: #585b70; }
+    .bool { color: #f38ba8; }
 
-  .params-table th {
-    text-align: left;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--muted);
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-  }
+    .params-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
 
-  .params-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(31,45,69,0.5);
-    font-size: 13px;
-    vertical-align: top;
-  }
+    .params-table th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
 
-  .params-table tr:last-child td { border-bottom: none; }
+    .params-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(31,45,69,0.5);
+      font-size: 13px;
+      vertical-align: top;
+    }
 
-  .param-name {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: #89b4fa;
-  }
+    .params-table tr:last-child td { border-bottom: none; }
 
-  .param-type {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    background: var(--surface2);
-    padding: 2px 6px;
-    border-radius: 3px;
-  }
+    .param-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #89b4fa;
+    }
 
-  .required { color: var(--danger); font-size: 10px; font-weight: 700; }
-  .optional { color: var(--muted); font-size: 10px; }
+    .param-type {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
 
-  /* ── Alert ── */
-  .alert {
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin: 16px 0;
-    font-size: 13px;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }
+    .required { color: var(--danger); font-size: 10px; font-weight: 700; }
+    .optional { color: var(--muted); font-size: 10px; }
 
-  .alert-info { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); color: #93c5fd; }
-  .alert-warn { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: #fcd34d; }
-  .alert-icon { font-size: 15px; margin-top: 1px; }
+    .alert {
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
 
-  /* ── Status codes ── */
-  .status-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-    margin-top: 8px;
-  }
+    .alert-info { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); color: #93c5fd; }
+    .alert-warn { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: #fcd34d; }
+    .alert-purple { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); color: #c4b5fd; }
+    .alert-icon { font-size: 15px; margin-top: 1px; }
 
-  .status-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 10px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
 
-  .status-code {
-    font-family: var(--mono);
-    font-size: 16px;
-    font-weight: 700;
-  }
+    .status-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
 
-  .s200 { color: #10b981; }
-  .s201 { color: #10b981; }
-  .s401 { color: #f59e0b; }
-  .s403 { color: #f97316; }
-  .s404 { color: #ef4444; }
-  .s422 { color: #ef4444; }
+    .status-code { font-family: var(--mono); font-size: 16px; font-weight: 700; }
+    .s200 { color: #10b981; }
+    .s201 { color: #10b981; }
+    .s401 { color: #f59e0b; }
+    .s403 { color: #f97316; }
+    .s404 { color: #ef4444; }
+    .s422 { color: #ef4444; }
+    .status-label { font-size: 11px; color: var(--muted); }
 
-  .status-label { font-size: 11px; color: var(--muted); }
+    .base-url {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 28px;
+    }
 
-  /* ── Base URL box ── */
-  .base-url {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 28px;
-  }
+    .base-url-label {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
 
-  .base-url-label {
-    font-size: 11px;
-    color: var(--muted);
-    white-space: nowrap;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-  }
+    .base-url-value { font-family: var(--mono); font-size: 13px; color: var(--accent); }
 
-  .base-url-value {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--accent);
-  }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 28px 20px; }
+    }
 
-  @media (max-width: 768px) {
-    .sidebar { display: none; }
-    .main { padding: 28px 20px; }
-  }
-</style>
+    /* ── Copy button ── */
+    .pre-wrapper {
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+
+    .pre-wrapper:hover .copy-btn { opacity: 1; }
+
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+      color: #000;
+      border-color: var(--success);
+      opacity: 1;
+    }
+
+    /* ── Copy route pill on endpoint header ── */
+    .copy-route-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.3px;
+      margin-left: auto;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .copy-route-btn:hover {
+      background: var(--surface2);
+      color: var(--text);
+      border-color: #2a3f60;
+    }
+
+    .copy-route-btn.copied {
+      background: rgba(16,185,129,0.15);
+      color: var(--success);
+      border-color: var(--success);
+    }
+  </style>
 </head>
 <body>
 
@@ -470,7 +517,7 @@
     <div class="sidebar-section">Introdução</div>
     <a href="#intro">Visão Geral</a>
     <a href="#autenticacao">Autenticação</a>
-    <a href="#erros">Erros & Status</a>
+    <a href="#erros">Erros &amp; Status</a>
 
     <div class="sidebar-section">Auth</div>
     <a href="#login"><span class="method-badge post">POST</span> Login</a>
@@ -480,6 +527,10 @@
     <div class="sidebar-section">Vagas</div>
     <a href="#vagas-index"><span class="method-badge get">GET</span> Listar Vagas</a>
     <a href="#vagas-assumir"><span class="method-badge post">POST</span> Assumir Vaga</a>
+    <a href="#vagas-por-local"><span class="method-badge get">GET</span> Qtd. por Local</a>
+    <a href="#vagas-total"><span class="method-badge get">GET</span> Qtd. Total</a>
+    <a href="#vagas-panorama-disponiveis"><span class="method-badge get">GET</span> Panorama Disp.</a>
+    <a href="#vagas-panorama-preenchidas"><span class="method-badge get">GET</span> Panorama Preench.</a>
 
     <div class="sidebar-section">Plantões</div>
     <a href="#plantoes-index"><span class="method-badge get">GET</span> Listar Plantões</a>
@@ -517,7 +568,7 @@
         </div>
         <div class="meta-item">
           <span class="meta-label">Auth</span>
-          <span class="meta-value">Bearer Token</span>
+          <span class="meta-value">Bearer + API Key</span>
         </div>
       </div>
     </div>
@@ -525,7 +576,7 @@
     <!-- Autenticação -->
     <div class="section" id="autenticacao">
       <div class="section-title">Autenticação</div>
-      <div class="section-desc">Todas as rotas (exceto login) requerem um Bearer Token no header Authorization.</div>
+      <div class="section-desc">A API suporta dois métodos de autenticação conforme o endpoint.</div>
 
       <div class="base-url">
         <span class="base-url-label">Base URL</span>
@@ -537,14 +588,23 @@
         <div>Sempre inclua o header <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">Accept: application/json</code> em todas as requisições. Sem ele, o Laravel pode retornar HTML em erros de validação.</div>
       </div>
 
-      <pre><span class="cmt"># Headers obrigatórios para rotas protegidas</span>
+      <pre><span class="cmt"># Rotas protegidas por Bearer Token (Sanctum)</span>
 Authorization: Bearer <span class="str">{seu_token}</span>
 Accept: application/json
-Content-Type: application/json</pre>
+Content-Type: application/json
+
+<span class="cmt"># Rota protegida por API Key (sistema externo)</span>
+X-API-Key: <span class="str">{sua_chave}</span>
+Accept: application/json</pre>
+
+      <div class="alert alert-purple" style="margin-top:16px">
+        <span class="alert-icon">🔑</span>
+        <div>A rota <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">GET /vagas/quantidade-total</code> usa <strong>X-API-Key</strong> no header em vez de Bearer Token. A chave é configurada via variável de ambiente <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">API_KEY</code> no servidor.</div>
+      </div>
 
       <div class="alert alert-info" style="margin-top:16px">
         <span class="alert-icon">ℹ</span>
-        <div>O token expira em <strong>30 dias</strong> após a emissão. Ao fazer login novamente com o mesmo <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">device_name</code>, o token anterior é revogado automaticamente.</div>
+        <div>O Bearer Token expira em <strong>30 dias</strong> após a emissão. Ao fazer login novamente com o mesmo <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">device_name</code>, o token anterior é revogado automaticamente.</div>
       </div>
     </div>
 
@@ -593,9 +653,9 @@ Content-Type: application/json</pre>
             <table class="params-table">
               <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
               <tbody>
-                <tr><td class="param-name">email</td><td><span class="param-type">string</span></td><td><span class="required">✱ obr.</span></td><td>E-mail do usuário</td></tr>
-                <tr><td class="param-name">password</td><td><span class="param-type">string</span></td><td><span class="required">✱ obr.</span></td><td>Senha do usuário</td></tr>
-                <tr><td class="param-name">device_name</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Nome do dispositivo. Default: <code style="font-family:var(--mono);font-size:11px">react-app</code></td></tr>
+              <tr><td class="param-name">email</td><td><span class="param-type">string</span></td><td><span class="required">✱ obr.</span></td><td>E-mail do usuário</td></tr>
+              <tr><td class="param-name">password</td><td><span class="param-type">string</span></td><td><span class="required">✱ obr.</span></td><td>Senha do usuário</td></tr>
+              <tr><td class="param-name">device_name</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Nome do dispositivo. Default: <code style="font-family:var(--mono);font-size:11px">react-app</code></td></tr>
               </tbody>
             </table>
             <pre style="margin-top:14px">{
@@ -610,9 +670,10 @@ Content-Type: application/json</pre>
   <span class="key">"expira"</span>: <span class="str">"2025-05-08T14:32:00.000000Z"</span>,
   <span class="key">"usuario"</span>: {
     <span class="key">"id"</span>: <span class="num">42</span>,
+    <span class="key">"external_id"</span>: <span class="str">"USR-00042"</span>,
     <span class="key">"name"</span>: <span class="str">"Dr. João Silva"</span>,
     <span class="key">"email"</span>: <span class="str">"medico@hospital.com"</span>,
-    <span class="key">"perfil"</span>: <span class="str">"medico"</span>,
+    <span class="key">"perfil"</span>: <span class="str">"user"</span>,
     <span class="key">"is_medico"</span>: <span class="bool">true</span>
   }
 }</pre>
@@ -652,13 +713,18 @@ Content-Type: application/json</pre>
         <div class="endpoint-body">
           <pre style="margin-top:12px">{
   <span class="key">"id"</span>: <span class="num">42</span>,
+  <span class="key">"external_id"</span>: <span class="str">"USR-00042"</span>,
   <span class="key">"name"</span>: <span class="str">"Dr. João Silva"</span>,
   <span class="key">"email"</span>: <span class="str">"medico@hospital.com"</span>,
-  <span class="key">"perfil"</span>: <span class="str">"medico"</span>,
+  <span class="key">"perfil"</span>: <span class="str">"user"</span>,
   <span class="key">"is_medico"</span>: <span class="bool">true</span>,
   <span class="key">"ativo"</span>: <span class="bool">true</span>,
   <span class="key">"especialidades"</span>: [
-    { <span class="key">"id"</span>: <span class="num">3</span>, <span class="key">"nome"</span>: <span class="str">"Clínica Médica"</span> }
+    {
+      <span class="key">"id"</span>: <span class="num">3</span>,
+      <span class="key">"external_id"</span>: <span class="str">"ESP-003"</span>,
+      <span class="key">"nome"</span>: <span class="str">"Clínica Médica"</span>
+    }
   ],
   <span class="key">"dados_profissionais"</span>: {
     <span class="key">"crm"</span>: <span class="str">"123456"</span>,
@@ -675,7 +741,7 @@ Content-Type: application/json</pre>
     <!-- ══════════════════════════════════════════════════════════ VAGAS -->
     <div class="section">
       <div class="section-title">Vagas</div>
-      <div class="section-desc">Vagas disponíveis filtradas automaticamente pelas especialidades do médico autenticado.</div>
+      <div class="section-desc">Vagas disponíveis filtradas automaticamente pelas especialidades do médico autenticado. Inclui rotas de consulta de quantidade para uso interno e integrações externas.</div>
 
       <!-- Listar vagas -->
       <div class="endpoint" id="vagas-index">
@@ -695,12 +761,12 @@ Content-Type: application/json</pre>
             <table class="params-table">
               <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
               <tbody>
-                <tr><td class="param-name">data_inicio</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>Filtro de data inicial (YYYY-MM-DD)</td></tr>
-                <tr><td class="param-name">data_fim</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>Filtro de data final (YYYY-MM-DD)</td></tr>
-                <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por especialidade</td></tr>
-                <tr><td class="param-name">hospital_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por hospital</td></tr>
-                <tr><td class="param-name">per_page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Itens por página. Default: 20</td></tr>
-                <tr><td class="param-name">page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Número da página. Default: 1</td></tr>
+              <tr><td class="param-name">data_inicio</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>Filtro de data inicial (YYYY-MM-DD)</td></tr>
+              <tr><td class="param-name">data_fim</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>Filtro de data final (YYYY-MM-DD)</td></tr>
+              <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por especialidade</td></tr>
+              <tr><td class="param-name">hospital_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por hospital</td></tr>
+              <tr><td class="param-name">per_page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Itens por página. Default: 20</td></tr>
+              <tr><td class="param-name">page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Número da página. Default: 1</td></tr>
               </tbody>
             </table>
           </div>
@@ -714,11 +780,23 @@ Content-Type: application/json</pre>
       <span class="key">"hora_inicio"</span>: <span class="str">"07:00"</span>,
       <span class="key">"hora_fim"</span>: <span class="str">"19:00"</span>,
       <span class="key">"duracao_horas"</span>: <span class="num">12</span>,
-      <span class="key">"tipo"</span>: <span class="str">"normal"</span>,
+      <span class="key">"tipo"</span>: <span class="str">"escala"</span>,
       <span class="key">"status"</span>: <span class="str">"disponivel"</span>,
-      <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
-      <span class="key">"setor"</span>: <span class="str">"UTI Adulto"</span>,
-      <span class="key">"especialidade"</span>: <span class="str">"Clínica Médica"</span>,
+      <span class="key">"hospital"</span>: {
+        <span class="key">"id"</span>: <span class="num">3</span>,
+        <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
+        <span class="key">"nome"</span>: <span class="str">"Hospital São Lucas"</span>
+      },
+      <span class="key">"setor"</span>: {
+        <span class="key">"id"</span>: <span class="num">7</span>,
+        <span class="key">"external_id"</span>: <span class="str">"SET-011"</span>,
+        <span class="key">"nome"</span>: <span class="str">"UTI Adulto"</span>
+      },
+      <span class="key">"especialidade"</span>: {
+        <span class="key">"id"</span>: <span class="num">3</span>,
+        <span class="key">"external_id"</span>: <span class="str">"ESP-003"</span>,
+        <span class="key">"nome"</span>: <span class="str">"Clínica Médica"</span>
+      },
       <span class="key">"funcao"</span>: <span class="str">"Plantonista"</span>,
       <span class="key">"urgencia"</span>: <span class="bool">false</span>
     }
@@ -751,6 +829,272 @@ Content-Type: application/json</pre>
 <span class="cmt">// 422 — Vaga indisponível ou já assumida</span></pre>
         </div>
       </div>
+
+      <!-- Quantidade por local — NOVO -->
+      <div class="endpoint" id="vagas-por-local">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/api/v1/vagas/quantidade-por-local</span>
+          <span class="endpoint-desc">Vagas disponíveis agrupadas por hospital e setor</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Retorna apenas vagas <strong>disponíveis a partir de hoje</strong>, filtradas automaticamente pelas especialidades do médico autenticado. Útil para exibir um resumo de oportunidades por localidade no app.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'notes')">Observações</button>
+          </div>
+          <div class="tab-panel active" data-tab="response">
+            <pre>{
+  <span class="key">"usuario"</span>: {
+    <span class="key">"id"</span>: <span class="num">42</span>,
+    <span class="key">"external_id"</span>: <span class="str">"USR-00042"</span>,
+    <span class="key">"name"</span>: <span class="str">"Dra. Naara Silva"</span>
+  },
+  <span class="key">"total_geral"</span>: <span class="num">8</span>,
+  <span class="key">"hospitais"</span>: [
+    {
+      <span class="key">"hospital_id"</span>: <span class="num">3</span>,
+      <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
+      <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
+      <span class="key">"total"</span>: <span class="num">5</span>,
+      <span class="key">"setores"</span>: [
+        {
+          <span class="key">"setor_id"</span>: <span class="num">7</span>,
+          <span class="key">"external_id"</span>: <span class="str">"SET-011"</span>,
+          <span class="key">"setor"</span>: <span class="str">"UTI Adulto"</span>,
+          <span class="key">"quantidade"</span>: <span class="num">3</span>
+        },
+        {
+          <span class="key">"setor_id"</span>: <span class="num">9</span>,
+          <span class="key">"external_id"</span>: <span class="str">"SET-014"</span>,
+          <span class="key">"setor"</span>: <span class="str">"Pronto Socorro"</span>,
+          <span class="key">"quantidade"</span>: <span class="num">2</span>
+        }
+      ]
+    },
+    {
+      <span class="key">"hospital_id"</span>: <span class="num">5</span>,
+      <span class="key">"external_id"</span>: <span class="str">"HOSP-003"</span>,
+      <span class="key">"hospital"</span>: <span class="str">"UPA Centro"</span>,
+      <span class="key">"total"</span>: <span class="num">3</span>,
+      <span class="key">"setores"</span>: [
+        {
+          <span class="key">"setor_id"</span>: <span class="num">2</span>,
+          <span class="key">"external_id"</span>: <span class="str">"SET-002"</span>,
+          <span class="key">"setor"</span>: <span class="str">"Emergência"</span>,
+          <span class="key">"quantidade"</span>: <span class="num">3</span>
+        }
+      ]
+    }
+  ]
+}</pre>
+          </div>
+          <div class="tab-panel" data-tab="notes">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Campo</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">total_geral</td><td>Soma de todas as vagas disponíveis para o médico, considerando todas as suas especialidades</td></tr>
+              <tr><td class="param-name">hospitais[].total</td><td>Total de vagas disponíveis naquele hospital para o médico</td></tr>
+              <tr><td class="param-name">setores[].quantidade</td><td>Vagas disponíveis naquele setor específico do hospital</td></tr>
+              <tr><td class="param-name">external_id</td><td>ID de referência do sistema GIX para sincronização. Presente em usuário, hospital e setor</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quantidade total — NOVO -->
+      <div class="endpoint" id="vagas-total">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/api/v1/vagas/quantidade-total</span>
+          <span class="endpoint-desc">Total de vagas do sistema (integração externa)</span>
+          <span class="apikey-badge">🔑 X-API-Key</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-purple" style="margin-top:12px">
+            <span class="alert-icon">🔑</span>
+            <div>Esta rota <strong>não usa Bearer Token</strong>. Requer o header <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">X-API-Key</code> com a chave configurada via variável de ambiente <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">API_KEY</code> no servidor. Destinada a integrações de sistema externo (ex: GIX, dashboards, robôs).</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'request')">Requisição</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+          </div>
+          <div class="tab-panel active" data-tab="request">
+            <pre><span class="cmt"># Header obrigatório</span>
+X-API-Key: <span class="str">sua_chave_secreta</span>
+Accept: application/json
+
+<span class="cmt"># Sem body, sem parâmetros</span>
+GET /api/v1/vagas/quantidade-total</pre>
+            <div class="alert alert-warn" style="margin-top:12px">
+              <span class="alert-icon">⚠</span>
+              <div>Retorna <strong>401</strong> caso a chave esteja ausente ou incorreta: <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">"Unauthorized. Invalid or missing API key."</code></div>
+            </div>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200</span>
+{
+  <span class="key">"disponiveis_total"</span>: <span class="num">47</span>,
+  <span class="key">"disponiveis_hoje"</span>: <span class="num">6</span>,
+  <span class="key">"preenchidas_futuras"</span>: <span class="num">83</span>,
+  <span class="key">"consultado_em"</span>: <span class="str">"15/04/2025 14:32:00"</span>
+}
+
+<span class="cmt">// 401 — chave inválida ou ausente</span>
+{ <span class="key">"message"</span>: <span class="str">"Unauthorized. Invalid or missing API key."</span> }</pre>
+            <table class="params-table" style="margin-top:16px">
+              <thead><tr><th>Campo</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">disponiveis_total</td><td>Total de vagas com status <code style="font-family:var(--mono);font-size:11px">disponivel</code> a partir de hoje (inclusive)</td></tr>
+              <tr><td class="param-name">disponiveis_hoje</td><td>Vagas disponíveis apenas na data atual</td></tr>
+              <tr><td class="param-name">preenchidas_futuras</td><td>Vagas com status <code style="font-family:var(--mono);font-size:11px">preenchida</code> a partir de hoje (médico já vinculado)</td></tr>
+              <tr><td class="param-name">consultado_em</td><td>Timestamp da consulta no fuso horário do servidor (America/Sao_Paulo)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Panorama disponíveis — NOVO -->
+      <div class="endpoint" id="vagas-panorama-disponiveis">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/api/v1/vagas/panorama-disponiveis</span>
+          <span class="endpoint-desc">Panorama geral de vagas disponíveis por hospital</span>
+          <span class="apikey-badge">🔑 X-API-Key</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-purple" style="margin-top:12px">
+            <span class="alert-icon">🔑</span>
+            <div>Não requer usuário autenticado. Requer header <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">X-API-Key</code>. Retorna <strong>todas</strong> as vagas disponíveis do sistema, agrupadas por hospital → setor → especialidade, sem filtro de médico.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+          </div>
+          <div class="tab-panel active" data-tab="params">
+            <table class="params-table">
+              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">hospital_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por hospital específico</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200</span>
+{
+  <span class="key">"status"</span>: <span class="str">"disponivel"</span>,
+  <span class="key">"total_geral"</span>: <span class="num">47</span>,
+  <span class="key">"consultado_em"</span>: <span class="str">"15/04/2025 14:32:00"</span>,
+  <span class="key">"hospitais"</span>: [
+    {
+      <span class="key">"hospital_id"</span>: <span class="num">3</span>,
+      <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
+      <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
+      <span class="key">"total"</span>: <span class="num">18</span>,
+      <span class="key">"setores"</span>: [
+        {
+          <span class="key">"setor_id"</span>: <span class="num">7</span>,
+          <span class="key">"external_id"</span>: <span class="str">"SET-011"</span>,
+          <span class="key">"setor"</span>: <span class="str">"UTI Adulto"</span>,
+          <span class="key">"quantidade"</span>: <span class="num">10</span>,
+          <span class="key">"especialidades"</span>: [
+            {
+              <span class="key">"especialidade_id"</span>: <span class="num">3</span>,
+              <span class="key">"external_id"</span>: <span class="str">"ESP-003"</span>,
+              <span class="key">"especialidade"</span>: <span class="str">"Clínica Médica"</span>,
+              <span class="key">"quantidade"</span>: <span class="num">6</span>
+            },
+            {
+              <span class="key">"especialidade_id"</span>: <span class="num">5</span>,
+              <span class="key">"external_id"</span>: <span class="str">"ESP-005"</span>,
+              <span class="key">"especialidade"</span>: <span class="str">"Cardiologia"</span>,
+              <span class="key">"quantidade"</span>: <span class="num">4</span>
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+<span class="cmt">// 401 — chave inválida ou ausente</span>
+{ <span class="key">"message"</span>: <span class="str">"Unauthorized. Invalid or missing API key."</span> }</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panorama preenchidas — NOVO -->
+      <div class="endpoint" id="vagas-panorama-preenchidas">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/api/v1/vagas/panorama-preenchidas</span>
+          <span class="endpoint-desc">Panorama geral de vagas preenchidas por hospital</span>
+          <span class="apikey-badge">🔑 X-API-Key</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-purple" style="margin-top:12px">
+            <span class="alert-icon">🔑</span>
+            <div>Idêntico ao panorama de disponíveis, mas filtra vagas com status <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">preenchida</code> — ou seja, vagas que já têm médico vinculado. Útil para acompanhar ocupação real do sistema.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+          </div>
+          <div class="tab-panel active" data-tab="params">
+            <table class="params-table">
+              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">hospital_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por hospital específico</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200 — mesma estrutura do panorama-disponiveis</span>
+{
+  <span class="key">"status"</span>: <span class="str">"preenchida"</span>,
+  <span class="key">"total_geral"</span>: <span class="num">83</span>,
+  <span class="key">"consultado_em"</span>: <span class="str">"15/04/2025 14:32:00"</span>,
+  <span class="key">"hospitais"</span>: [
+    {
+      <span class="key">"hospital_id"</span>: <span class="num">3</span>,
+      <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
+      <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
+      <span class="key">"total"</span>: <span class="num">34</span>,
+      <span class="key">"setores"</span>: [
+        {
+          <span class="key">"setor_id"</span>: <span class="num">7</span>,
+          <span class="key">"external_id"</span>: <span class="str">"SET-011"</span>,
+          <span class="key">"setor"</span>: <span class="str">"UTI Adulto"</span>,
+          <span class="key">"quantidade"</span>: <span class="num">20</span>,
+          <span class="key">"especialidades"</span>: [
+            {
+              <span class="key">"especialidade_id"</span>: <span class="num">3</span>,
+              <span class="key">"external_id"</span>: <span class="str">"ESP-003"</span>,
+              <span class="key">"especialidade"</span>: <span class="str">"Clínica Médica"</span>,
+              <span class="key">"quantidade"</span>: <span class="num">12</span>
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+<span class="cmt">// 401 — chave inválida ou ausente</span>
+{ <span class="key">"message"</span>: <span class="str">"Unauthorized. Invalid or missing API key."</span> }</pre>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ══════════════════════════════════════════════════════════ PLANTÕES -->
@@ -777,10 +1121,10 @@ Content-Type: application/json</pre>
             <table class="params-table">
               <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
               <tbody>
-                <tr><td class="param-name">status</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Filtrar por status do plantão</td></tr>
-                <tr><td class="param-name">data_inicio</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>YYYY-MM-DD</td></tr>
-                <tr><td class="param-name">data_fim</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>YYYY-MM-DD</td></tr>
-                <tr><td class="param-name">per_page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Default: 20</td></tr>
+              <tr><td class="param-name">status</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Filtrar por status do plantão</td></tr>
+              <tr><td class="param-name">data_inicio</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>YYYY-MM-DD</td></tr>
+              <tr><td class="param-name">data_fim</td><td><span class="param-type">date</span></td><td><span class="optional">opc.</span></td><td>YYYY-MM-DD</td></tr>
+              <tr><td class="param-name">per_page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Default: 20</td></tr>
               </tbody>
             </table>
           </div>
@@ -799,6 +1143,11 @@ Content-Type: application/json</pre>
       <span class="key">"divergencia"</span>: <span class="bool">false</span>,
       <span class="key">"pode_checkin"</span>: <span class="bool">false</span>,
       <span class="key">"pode_checkout"</span>: <span class="bool">false</span>,
+      <span class="key">"medico"</span>: {
+        <span class="key">"id"</span>: <span class="num">42</span>,
+        <span class="key">"external_id"</span>: <span class="str">"USR-00042"</span>,
+        <span class="key">"name"</span>: <span class="str">"Dr. João Silva"</span>
+      },
       <span class="key">"vaga"</span>: {
         <span class="key">"id"</span>: <span class="num">15</span>,
         <span class="key">"data"</span>: <span class="str">"2025-04-10"</span>,
@@ -806,11 +1155,23 @@ Content-Type: application/json</pre>
         <span class="key">"hora_inicio"</span>: <span class="str">"07:00"</span>,
         <span class="key">"hora_fim"</span>: <span class="str">"19:00"</span>,
         <span class="key">"duracao_horas"</span>: <span class="num">12</span>,
-        <span class="key">"tipo"</span>: <span class="str">"normal"</span>,
+        <span class="key">"tipo"</span>: <span class="str">"escala"</span>,
         <span class="key">"status"</span>: <span class="str">"preenchida"</span>,
-        <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
-        <span class="key">"setor"</span>: <span class="str">"UTI Adulto"</span>,
-        <span class="key">"especialidade"</span>: <span class="str">"Clínica Médica"</span>,
+        <span class="key">"hospital"</span>: {
+          <span class="key">"id"</span>: <span class="num">3</span>,
+          <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
+          <span class="key">"nome"</span>: <span class="str">"Hospital São Lucas"</span>
+        },
+        <span class="key">"setor"</span>: {
+          <span class="key">"id"</span>: <span class="num">7</span>,
+          <span class="key">"external_id"</span>: <span class="str">"SET-011"</span>,
+          <span class="key">"nome"</span>: <span class="str">"UTI Adulto"</span>
+        },
+        <span class="key">"especialidade"</span>: {
+          <span class="key">"id"</span>: <span class="num">3</span>,
+          <span class="key">"external_id"</span>: <span class="str">"ESP-003"</span>,
+          <span class="key">"nome"</span>: <span class="str">"Clínica Médica"</span>
+        },
         <span class="key">"funcao"</span>: <span class="str">"Plantonista"</span>
       }
     }
@@ -825,13 +1186,13 @@ Content-Type: application/json</pre>
             <table class="params-table" style="margin-top:8px">
               <thead><tr><th>Valor</th><th>Label</th><th>Descrição</th></tr></thead>
               <tbody>
-                <tr><td class="param-name">prevista</td><td>Prevista</td><td>Plantão agendado, aguardando início</td></tr>
-                <tr><td class="param-name">em_execucao</td><td>Em Execução</td><td>Check-in realizado, plantão em andamento</td></tr>
-                <tr><td class="param-name">realizada</td><td>Realizada</td><td>Check-out realizado, plantão concluído</td></tr>
-                <tr><td class="param-name">nao_realizada</td><td>Não Realizada</td><td>Médico não compareceu</td></tr>
-                <tr><td class="param-name">aguardando_troca</td><td>Aguardando Troca</td><td>Solicitação de troca pendente</td></tr>
-                <tr><td class="param-name">troca_com_colega</td><td>Troca com Colega</td><td>Troca aceita, outro médico assumiu</td></tr>
-                <tr><td class="param-name">cancelado</td><td>Cancelado</td><td>Plantão cancelado</td></tr>
+              <tr><td class="param-name">prevista</td><td>Prevista</td><td>Plantão agendado, aguardando início</td></tr>
+              <tr><td class="param-name">em_execucao</td><td>Em Execução</td><td>Check-in realizado, plantão em andamento</td></tr>
+              <tr><td class="param-name">realizada</td><td>Realizada</td><td>Check-out realizado, plantão concluído</td></tr>
+              <tr><td class="param-name">nao_realizada</td><td>Não Realizada</td><td>Médico não compareceu</td></tr>
+              <tr><td class="param-name">aguardando_troca</td><td>Aguardando Troca</td><td>Solicitação de troca pendente</td></tr>
+              <tr><td class="param-name">troca_com_colega</td><td>Troca com Colega</td><td>Troca aceita, outro médico assumiu</td></tr>
+              <tr><td class="param-name">cancelado</td><td>Cancelado</td><td>Plantão cancelado</td></tr>
               </tbody>
             </table>
           </div>
@@ -848,7 +1209,7 @@ Content-Type: application/json</pre>
           <span class="chevron">▶</span>
         </div>
         <div class="endpoint-body">
-          <p style="color:var(--muted);font-size:13px;padding-top:8px">Retorna o mesmo objeto do item da listagem. O médico só pode acessar seus próprios plantões (404 se de outro usuário).</p>
+          <p style="color:var(--muted);font-size:13px;padding-top:8px">Retorna o mesmo objeto do item da listagem (incluindo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">medico</code> com <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">external_id</code> e objetos completos de hospital, setor e especialidade). O médico só pode acessar seus próprios plantões (404 se de outro usuário).</p>
         </div>
       </div>
 
@@ -916,7 +1277,7 @@ Content-Type: application/json</pre>
             <table class="params-table">
               <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
               <tbody>
-                <tr><td class="param-name">substituto_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do médico substituto (deve existir e ter a especialidade)</td></tr>
+              <tr><td class="param-name">substituto_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do médico substituto (deve existir e ter a especialidade)</td></tr>
               </tbody>
             </table>
             <pre style="margin-top:12px">{ <span class="key">"substituto_id"</span>: <span class="num">55</span> }</pre>
@@ -953,7 +1314,11 @@ Content-Type: application/json</pre>
           <pre style="margin-top:12px">[
   {
     <span class="key">"id"</span>: <span class="num">7</span>,
-    <span class="key">"solicitante"</span>: <span class="str">"Dr. Carlos Mendes"</span>,
+    <span class="key">"solicitante"</span>: {
+      <span class="key">"id"</span>: <span class="num">30</span>,
+      <span class="key">"external_id"</span>: <span class="str">"USR-00030"</span>,
+      <span class="key">"name"</span>: <span class="str">"Dr. Carlos Mendes"</span>
+    },
     <span class="key">"especialidade"</span>: <span class="str">"Clínica Médica"</span>,
     <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
     <span class="key">"setor"</span>: <span class="str">"UTI Adulto"</span>,
@@ -1003,33 +1368,101 @@ Content-Type: application/json</pre>
 </div>
 
 <script>
-function toggleEndpoint(header) {
-  const card = header.parentElement;
-  card.classList.toggle('open');
-}
+  /* ── Toggle endpoint open/close ── */
+  function toggleEndpoint(header) {
+    const card = header.parentElement;
+    card.classList.toggle('open');
+  }
 
-function switchTab(btn, tabName) {
-  const body = btn.closest('.endpoint-body');
-  body.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  body.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  body.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-}
+  /* ── Tab switching ── */
+  function switchTab(btn, tabName) {
+    const body = btn.closest('.endpoint-body');
+    body.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    body.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    body.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+  }
 
-// Highlight active sidebar link on scroll
-const sections = document.querySelectorAll('[id]');
-const links = document.querySelectorAll('.sidebar a');
+  /* ── Copy helper ── */
+  function copyText(text, btn, label = 'Copiado!') {
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = label;
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1800);
+    });
+  }
 
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  /* ── Copy route button on header click (stop propagation) ── */
+  function copyRoute(event, btn) {
+    event.stopPropagation();
+    const header = btn.closest('.endpoint-header');
+    const method = header.querySelector('.method-pill').textContent.trim();
+    const path   = header.querySelector('.endpoint-path').textContent.trim();
+    copyText(`${method} ${path}`, btn, '✓ Copiado');
+  }
+
+  /* ── Copy code block ── */
+  function copyCode(btn) {
+    const pre = btn.closest('.pre-wrapper').querySelector('pre');
+    // Strip HTML tags to get plain text
+    const text = pre.innerText || pre.textContent;
+    copyText(text, btn, '✓ Copiado');
+  }
+
+  /* ── On load: inject copy buttons into all endpoint headers and pre blocks ── */
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // 1. Copy-route button in each endpoint header
+    document.querySelectorAll('.endpoint-header').forEach(header => {
+      // Avoid double injection
+      if (header.querySelector('.copy-route-btn')) return;
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-route-btn';
+      btn.textContent = 'Copiar rota';
+      btn.setAttribute('onclick', 'copyRoute(event, this)');
+
+      // Insert before the chevron
+      const chevron = header.querySelector('.chevron');
+      header.insertBefore(btn, chevron);
+    });
+
+    // 2. Copy button inside each <pre> block
+    document.querySelectorAll('pre').forEach(pre => {
+      // Already wrapped?
+      if (pre.parentElement.classList.contains('pre-wrapper')) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'pre-wrapper';
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copiar';
+      btn.setAttribute('onclick', 'copyCode(this)');
+      wrapper.appendChild(btn);
+    });
   });
-  links.forEach(l => {
-    l.classList.remove('active');
-    if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+
+  /* ── Highlight active sidebar link on scroll ── */
+  const sections = document.querySelectorAll('[id]');
+  const links    = document.querySelectorAll('.sidebar a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    links.forEach(l => {
+      l.classList.remove('active');
+      if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+    });
   });
-});
 </script>
 </body>
 </html>
