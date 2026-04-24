@@ -543,6 +543,10 @@
     <a href="#trocas-pendentes"><span class="method-badge get">GET</span> Pendentes</a>
     <a href="#aceitar-troca"><span class="method-badge post">POST</span> Aceitar</a>
     <a href="#recusar-troca"><span class="method-badge post">POST</span> Recusar</a>
+
+    <div class="sidebar-section">Médicos</div>
+    <a href="#medicos-index"><span class="method-badge get">GET</span> Listar Médicos</a>
+    <a href="#medicos-por-especialidade"><span class="method-badge get">GET</span> Por Especialidade</a>
   </nav>
 
   <!-- Main -->
@@ -753,6 +757,10 @@ Accept: application/json</pre>
           <span class="chevron">▶</span>
         </div>
         <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div><strong>Filtro automático por perfil:</strong> médicos veem apenas vagas das suas especialidades; gestão vê vagas dos seus contratos; admin e suporte veem todas.</div>
+          </div>
           <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
             <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
@@ -1107,11 +1115,15 @@ GET /api/v1/vagas/quantidade-total</pre>
         <div class="endpoint-header" onclick="toggleEndpoint(this)">
           <span class="method-pill get">GET</span>
           <span class="endpoint-path">/api/v1/plantoes</span>
-          <span class="endpoint-desc">Listar plantões do médico autenticado</span>
+          <span class="endpoint-desc">Listar plantões</span>
           <span class="auth-badge">🔒 Bearer</span>
           <span class="chevron">▶</span>
         </div>
         <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div><strong>Filtro automático por perfil:</strong> médicos veem apenas seus próprios plantões; gestão vê plantões dos seus contratos; admin e suporte veem todos.</div>
+          </div>
           <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
             <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
@@ -1360,6 +1372,124 @@ GET /api/v1/vagas/quantidade-total</pre>
           <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Reverte o plantão original para status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>.</p>
           <pre><span class="cmt">// Sucesso 200</span>
 { <span class="key">"message"</span>: <span class="str">"Troca recusada."</span> }</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ MÉDICOS -->
+    <div class="section">
+      <div class="section-title">Médicos</div>
+      <div class="section-desc">Listagem de médicos do sistema. Acesso restrito a admin, suporte e gestão — exceto a rota <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:2px 6px;border-radius:3px">por-especialidade</code>, disponível para qualquer usuário autenticado.</div>
+
+      <!-- Listar médicos -->
+      <div class="endpoint" id="medicos-index">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/api/v1/medicos</span>
+          <span class="endpoint-desc">Listar todos os médicos com dados completos</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-warn" style="margin-top:12px">
+            <span class="alert-icon">⚠</span>
+            <div>Acesso restrito a <strong>admin, suporte e gestão</strong>. Médico com perfil <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">user</code> recebe <strong>403</strong>.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+          </div>
+          <div class="tab-panel active" data-tab="params">
+            <table class="params-table">
+              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">ativo</td><td><span class="param-type">boolean</span></td><td><span class="optional">opc.</span></td><td>Filtrar por status ativo/inativo. Omitir retorna todos.</td></tr>
+              <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar médicos que possuem essa especialidade</td></tr>
+              <tr><td class="param-name">busca</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Busca por nome ou e-mail</td></tr>
+              <tr><td class="param-name">per_page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Itens por página. Default: 50</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre>{
+  <span class="key">"data"</span>: [
+    {
+      <span class="key">"id"</span>: <span class="num">42</span>,
+      <span class="key">"external_id"</span>: <span class="str">"USR-00042"</span>,
+      <span class="key">"name"</span>: <span class="str">"Dr. João Silva"</span>,
+      <span class="key">"email"</span>: <span class="str">"joao@hospital.com"</span>,
+      <span class="key">"ativo"</span>: <span class="bool">true</span>,
+      <span class="key">"especialidades"</span>: [
+        {
+          <span class="key">"id"</span>: <span class="num">3</span>,
+          <span class="key">"external_id"</span>: <span class="str">"ESP-003"</span>,
+          <span class="key">"nome"</span>: <span class="str">"Clínica Médica"</span>
+        }
+      ],
+      <span class="key">"dados_profissionais"</span>: {
+        <span class="key">"cpf"</span>: <span class="str">"000.000.000-00"</span>,
+        <span class="key">"crm"</span>: <span class="str">"123456"</span>,
+        <span class="key">"crm_estado"</span>: <span class="str">"SP"</span>,
+        <span class="key">"telefone"</span>: <span class="str">"(11) 99999-0000"</span>,
+        <span class="key">"whatsapp"</span>: <span class="str">"(11) 99999-0000"</span>,
+        <span class="key">"foto"</span>: <span class="str">null</span>
+      }
+    }
+  ],
+  <span class="key">"total"</span>: <span class="num">87</span>,
+  <span class="key">"por_pagina"</span>: <span class="num">50</span>,
+  <span class="key">"pagina"</span>: <span class="num">1</span>,
+  <span class="key">"paginas"</span>: <span class="num">2</span>
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Por especialidade -->
+      <div class="endpoint" id="medicos-por-especialidade">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/api/v1/medicos/por-especialidade</span>
+          <span class="endpoint-desc">Médicos disponíveis para troca</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Disponível para qualquer usuário autenticado. Retorna médicos ativos que possuem a especialidade informada, <strong>excluindo o próprio usuário logado</strong>. Se <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">especialidade_id</code> não for informado, usa todas as especialidades do médico logado. Ideal para popular o seletor de substituto na solicitação de troca.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+          </div>
+          <div class="tab-panel active" data-tab="params">
+            <table class="params-table">
+              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por especialidade específica. Se omitido, usa as especialidades do médico logado.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Array direto (sem paginação)</span>
+[
+  {
+    <span class="key">"id"</span>: <span class="num">55</span>,
+    <span class="key">"external_id"</span>: <span class="str">"USR-00055"</span>,
+    <span class="key">"name"</span>: <span class="str">"Dra. Maria Santos"</span>,
+    <span class="key">"crm"</span>: <span class="str">"654321"</span>,
+    <span class="key">"crm_estado"</span>: <span class="str">"SP"</span>,
+    <span class="key">"especialidades"</span>: [
+      {
+        <span class="key">"id"</span>: <span class="num">3</span>,
+        <span class="key">"external_id"</span>: <span class="str">"ESP-003"</span>,
+        <span class="key">"nome"</span>: <span class="str">"Clínica Médica"</span>
+      }
+    ]
+  }
+]</pre>
+          </div>
         </div>
       </div>
     </div>
