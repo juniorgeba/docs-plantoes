@@ -1395,7 +1395,7 @@ GET /api/v1/vagas/quantidade-total</pre>
         <div class="endpoint-body">
           <div class="alert alert-info" style="margin-top:12px">
             <span class="alert-icon">ℹ</span>
-            <div>Permite que o médico <strong>desfaça a solicitação de troca</strong> enquanto ela ainda está pendente, recuperando o plantão para si. A solicitação de troca é excluída permanentemente e o plantão retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Não requer body.</div>
+            <div>Permite que o médico <strong>desfaça a solicitação de troca</strong> enquanto ela ainda está pendente, recuperando o plantão para si. A solicitação de troca muda para o status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelada</code> (histórico preservado) e o plantão retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Não requer body.</div>
           </div>
           <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
@@ -1420,7 +1420,7 @@ GET /api/v1/vagas/quantidade-total</pre>
               <tbody>
               <tr><td class="param-name">Status exigido</td><td>O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">aguardando_troca</code>. Qualquer outro status retorna 422.</td></tr>
               <tr><td class="param-name">Proprietário</td><td>Apenas o médico titular do plantão pode reassumir. Tentativa de outro médico retorna 404 (a query já filtra por <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">usuario_id</code>).</td></tr>
-              <tr><td class="param-name">Efeito na troca</td><td>A solicitação de troca com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> é excluída definitivamente (<code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DELETE</code>). O médico substituto não é notificado automaticamente.</td></tr>
+              <tr><td class="param-name">Efeito na troca</td><td>A solicitação de troca com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> passa para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelada</code> e o campo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">respondido_em</code> é preenchido com o timestamp atual. O histórico é preservado e aparece na listagem de trocas.</td></tr>
               <tr><td class="param-name">Efeito no plantão</td><td>Status volta para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. O médico pode novamente solicitar uma nova troca ou realizar check-in normalmente.</td></tr>
               <tr><td class="param-name">Atomicidade</td><td>A exclusão da solicitação e a atualização do status do plantão ocorrem dentro de uma única <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
               </tbody>
