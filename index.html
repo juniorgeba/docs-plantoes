@@ -538,11 +538,15 @@
     <a href="#checkin"><span class="method-badge post">POST</span> Check-in</a>
     <a href="#checkout"><span class="method-badge post">POST</span> Check-out</a>
     <a href="#solicitar-troca"><span class="method-badge post">POST</span> Solicitar Troca</a>
+    <a href="#reassumir"><span class="method-badge post">POST</span> Reassumir</a>
 
     <div class="sidebar-section">Trocas</div>
     <a href="#trocas-pendentes"><span class="method-badge get">GET</span> Pendentes</a>
     <a href="#aceitar-troca"><span class="method-badge post">POST</span> Aceitar</a>
     <a href="#recusar-troca"><span class="method-badge post">POST</span> Recusar</a>
+
+    <div class="sidebar-section">Motivos de Troca</div>
+    <a href="#motivos-troca-listar"><span class="method-badge get">GET</span> Listar Motivos</a>
 
     <div class="sidebar-section">Médicos</div>
     <a href="#medicos-index"><span class="method-badge get">GET</span> Listar Médicos</a>
@@ -603,7 +607,7 @@ Accept: application/json</pre>
 
       <div class="alert alert-purple" style="margin-top:16px">
         <span class="alert-icon">🔑</span>
-        <div>A rota <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">GET /vagas/quantidade-total</code> usa <strong>X-API-Key</strong> no header em vez de Bearer Token. A chave é configurada via variável de ambiente <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">API_KEY</code> no servidor.</div>
+        <div>As rotas <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">GET /vagas/quantidade-total</code>, <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">GET /vagas/panorama-disponiveis</code> e <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">GET /vagas/panorama-preenchidas</code> usam <strong>X-API-Key</strong> no header em vez de Bearer Token. A chave é configurada via variável de ambiente <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:1px 5px;border-radius:3px">API_KEY</code> no servidor.</div>
       </div>
 
       <div class="alert alert-info" style="margin-top:16px">
@@ -793,7 +797,21 @@ Accept: application/json</pre>
       <span class="key">"hospital"</span>: {
         <span class="key">"id"</span>: <span class="num">3</span>,
         <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
-        <span class="key">"nome"</span>: <span class="str">"Hospital São Lucas"</span>
+        <span class="key">"nome"</span>: <span class="str">"Hospital São Lucas"</span>,
+        <span class="key">"cnpj"</span>: <span class="str">"00.000.000/0001-00"</span>,
+        <span class="key">"telefone"</span>: <span class="str">"(11) 3000-0000"</span>,
+        <span class="key">"email"</span>: <span class="str">"contato@saolucas.com.br"</span>,
+        <span class="key">"endereco"</span>: {
+          <span class="key">"cep"</span>: <span class="str">"01310-100"</span>,
+          <span class="key">"logradouro"</span>: <span class="str">"Av. Paulista"</span>,
+          <span class="key">"numero"</span>: <span class="str">"1000"</span>,
+          <span class="key">"complemento"</span>: <span class="str">null</span>,
+          <span class="key">"bairro"</span>: <span class="str">"Bela Vista"</span>,
+          <span class="key">"cidade"</span>: <span class="str">"São Paulo"</span>,
+          <span class="key">"estado"</span>: <span class="str">"SP"</span>,
+          <span class="key">"latitude"</span>: <span class="str">"-23.5614"</span>,
+          <span class="key">"longitude"</span>: <span class="str">"-46.6564"</span>
+        }
       },
       <span class="key">"setor"</span>: {
         <span class="key">"id"</span>: <span class="num">7</span>,
@@ -813,7 +831,8 @@ Accept: application/json</pre>
   <span class="key">"por_pagina"</span>: <span class="num">20</span>,
   <span class="key">"pagina"</span>: <span class="num">1</span>,
   <span class="key">"paginas"</span>: <span class="num">3</span>
-}</pre>
+}
+<span class="cmt">// ↑ ATUALIZADO: hospital agora inclui cnpj, telefone, email e objeto endereco completo</span></pre>
           </div>
         </div>
       </div>
@@ -869,6 +888,17 @@ Accept: application/json</pre>
       <span class="key">"hospital_id"</span>: <span class="num">3</span>,
       <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
       <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
+      <span class="key">"endereco"</span>: {
+        <span class="key">"cep"</span>: <span class="str">"01310-100"</span>,
+        <span class="key">"logradouro"</span>: <span class="str">"Av. Paulista"</span>,
+        <span class="key">"numero"</span>: <span class="str">"1000"</span>,
+        <span class="key">"complemento"</span>: <span class="str">null</span>,
+        <span class="key">"bairro"</span>: <span class="str">"Bela Vista"</span>,
+        <span class="key">"cidade"</span>: <span class="str">"São Paulo"</span>,
+        <span class="key">"estado"</span>: <span class="str">"SP"</span>,
+        <span class="key">"latitude"</span>: <span class="str">"-23.5614"</span>,
+        <span class="key">"longitude"</span>: <span class="str">"-46.6564"</span>
+      },
       <span class="key">"total"</span>: <span class="num">5</span>,
       <span class="key">"setores"</span>: [
         {
@@ -889,6 +919,17 @@ Accept: application/json</pre>
       <span class="key">"hospital_id"</span>: <span class="num">5</span>,
       <span class="key">"external_id"</span>: <span class="str">"HOSP-003"</span>,
       <span class="key">"hospital"</span>: <span class="str">"UPA Centro"</span>,
+      <span class="key">"endereco"</span>: {
+        <span class="key">"cep"</span>: <span class="str">"01001-000"</span>,
+        <span class="key">"logradouro"</span>: <span class="str">"Rua XV de Novembro"</span>,
+        <span class="key">"numero"</span>: <span class="str">"200"</span>,
+        <span class="key">"complemento"</span>: <span class="str">null</span>,
+        <span class="key">"bairro"</span>: <span class="str">"Centro"</span>,
+        <span class="key">"cidade"</span>: <span class="str">"São Paulo"</span>,
+        <span class="key">"estado"</span>: <span class="str">"SP"</span>,
+        <span class="key">"latitude"</span>: <span class="str">"-23.5505"</span>,
+        <span class="key">"longitude"</span>: <span class="str">"-46.6333"</span>
+      },
       <span class="key">"total"</span>: <span class="num">3</span>,
       <span class="key">"setores"</span>: [
         {
@@ -900,7 +941,8 @@ Accept: application/json</pre>
       ]
     }
   ]
-}</pre>
+}
+<span class="cmt">// ↑ ATUALIZADO: hospitais agora incluem objeto endereco completo</span></pre>
           </div>
           <div class="tab-panel" data-tab="notes">
             <table class="params-table" style="margin-top:8px">
@@ -908,6 +950,7 @@ Accept: application/json</pre>
               <tbody>
               <tr><td class="param-name">total_geral</td><td>Soma de todas as vagas disponíveis para o médico, considerando todas as suas especialidades</td></tr>
               <tr><td class="param-name">hospitais[].total</td><td>Total de vagas disponíveis naquele hospital para o médico</td></tr>
+              <tr><td class="param-name">hospitais[].endereco</td><td><strong>Novo.</strong> Objeto com cep, logradouro, numero, complemento, bairro, cidade, estado, latitude e longitude</td></tr>
               <tr><td class="param-name">setores[].quantidade</td><td>Vagas disponíveis naquele setor específico do hospital</td></tr>
               <tr><td class="param-name">external_id</td><td>ID de referência do sistema GIX para sincronização. Presente em usuário, hospital e setor</td></tr>
               </tbody>
@@ -1076,6 +1119,20 @@ GET /api/v1/vagas/quantidade-total</pre>
       <span class="key">"hospital_id"</span>: <span class="num">3</span>,
       <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
       <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
+      <span class="key">"cnpj"</span>: <span class="str">"00.000.000/0001-00"</span>,
+      <span class="key">"telefone"</span>: <span class="str">"(11) 3000-0000"</span>,
+      <span class="key">"email"</span>: <span class="str">"contato@saolucas.com.br"</span>,
+      <span class="key">"endereco"</span>: {
+        <span class="key">"cep"</span>: <span class="str">"01310-100"</span>,
+        <span class="key">"logradouro"</span>: <span class="str">"Av. Paulista"</span>,
+        <span class="key">"numero"</span>: <span class="str">"1000"</span>,
+        <span class="key">"complemento"</span>: <span class="str">null</span>,
+        <span class="key">"bairro"</span>: <span class="str">"Bela Vista"</span>,
+        <span class="key">"cidade"</span>: <span class="str">"São Paulo"</span>,
+        <span class="key">"estado"</span>: <span class="str">"SP"</span>,
+        <span class="key">"latitude"</span>: <span class="str">"-23.5614"</span>,
+        <span class="key">"longitude"</span>: <span class="str">"-46.6564"</span>
+      },
       <span class="key">"total"</span>: <span class="num">34</span>,
       <span class="key">"setores"</span>: [
         {
@@ -1172,7 +1229,21 @@ GET /api/v1/vagas/quantidade-total</pre>
         <span class="key">"hospital"</span>: {
           <span class="key">"id"</span>: <span class="num">3</span>,
           <span class="key">"external_id"</span>: <span class="str">"HOSP-001"</span>,
-          <span class="key">"nome"</span>: <span class="str">"Hospital São Lucas"</span>
+          <span class="key">"nome"</span>: <span class="str">"Hospital São Lucas"</span>,
+          <span class="key">"cnpj"</span>: <span class="str">"00.000.000/0001-00"</span>,
+          <span class="key">"telefone"</span>: <span class="str">"(11) 3000-0000"</span>,
+          <span class="key">"email"</span>: <span class="str">"contato@saolucas.com.br"</span>,
+          <span class="key">"endereco"</span>: {
+            <span class="key">"cep"</span>: <span class="str">"01310-100"</span>,
+            <span class="key">"logradouro"</span>: <span class="str">"Av. Paulista"</span>,
+            <span class="key">"numero"</span>: <span class="str">"1000"</span>,
+            <span class="key">"complemento"</span>: <span class="str">null</span>,
+            <span class="key">"bairro"</span>: <span class="str">"Bela Vista"</span>,
+            <span class="key">"cidade"</span>: <span class="str">"São Paulo"</span>,
+            <span class="key">"estado"</span>: <span class="str">"SP"</span>,
+            <span class="key">"latitude"</span>: <span class="str">"-23.5614"</span>,
+            <span class="key">"longitude"</span>: <span class="str">"-46.6564"</span>
+          }
         },
         <span class="key">"setor"</span>: {
           <span class="key">"id"</span>: <span class="num">7</span>,
@@ -1290,9 +1361,15 @@ GET /api/v1/vagas/quantidade-total</pre>
               <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
               <tbody>
               <tr><td class="param-name">substituto_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do médico substituto (deve existir e ter a especialidade)</td></tr>
+              <tr><td class="param-name">motivo_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>ID do motivo de troca pré-cadastrado (ver <a href="#motivos-troca-listar" style="color:var(--accent)">GET /motivos-troca</a>). Omitir se não aplicável.</td></tr>
+              <tr><td class="param-name">motivo_observacao</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Observação livre sobre o motivo. Máximo 500 caracteres.</td></tr>
               </tbody>
             </table>
-            <pre style="margin-top:12px">{ <span class="key">"substituto_id"</span>: <span class="num">55</span> }</pre>
+            <pre style="margin-top:12px">{
+  <span class="key">"substituto_id"</span>: <span class="num">55</span>,
+  <span class="key">"motivo_id"</span>: <span class="num">2</span>,
+  <span class="key">"motivo_observacao"</span>: <span class="str">"Consulta médica agendada há 3 meses."</span>
+}</pre>
           </div>
           <div class="tab-panel" data-tab="response">
             <pre><span class="cmt">// Sucesso 200</span>
@@ -1303,6 +1380,51 @@ GET /api/v1/vagas/quantidade-total</pre>
 
 <span class="cmt">// 422 — especialidade incompatível</span>
 { <span class="key">"message"</span>: <span class="str">"O médico não possui a especialidade requerida."</span> }</pre>
+          </div>
+        </div>
+      </div>
+      <!-- Reassumir plantão -->
+      <div class="endpoint" id="reassumir">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill post">POST</span>
+          <span class="endpoint-path">/api/v1/plantoes/{id}/reassumir</span>
+          <span class="endpoint-desc">Cancelar troca e recuperar o próprio plantão</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Permite que o médico <strong>desfaça a solicitação de troca</strong> enquanto ela ainda está pendente, recuperando o plantão para si. A solicitação de troca é excluída permanentemente e o plantão retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Não requer body.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+          </div>
+          <div class="tab-panel active" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200</span>
+{ <span class="key">"message"</span>: <span class="str">"Plantão reassumido com sucesso! A solicitação de troca foi cancelada."</span> }
+
+<span class="cmt">// 403 — plantão pertence a outro médico</span>
+{ <span class="key">"message"</span>: <span class="str">"Você não tem permissão para reassumir este plantão."</span> }
+
+<span class="cmt">// 404 — plantão não encontrado ou não pertence ao médico</span>
+{ <span class="key">"message"</span>: <span class="str">"No query results for model [Plantao]."</span> }
+
+<span class="cmt">// 422 — status incompatível (não está aguardando troca)</span>
+{ <span class="key">"message"</span>: <span class="str">"Este plantão não está aguardando troca e não pode ser reassumido."</span> }</pre>
+          </div>
+          <div class="tab-panel" data-tab="rules">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">Status exigido</td><td>O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">aguardando_troca</code>. Qualquer outro status retorna 422.</td></tr>
+              <tr><td class="param-name">Proprietário</td><td>Apenas o médico titular do plantão pode reassumir. Tentativa de outro médico retorna 404 (a query já filtra por <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">usuario_id</code>).</td></tr>
+              <tr><td class="param-name">Efeito na troca</td><td>A solicitação de troca com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> é excluída definitivamente (<code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DELETE</code>). O médico substituto não é notificado automaticamente.</td></tr>
+              <tr><td class="param-name">Efeito no plantão</td><td>Status volta para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. O médico pode novamente solicitar uma nova troca ou realizar check-in normalmente.</td></tr>
+              <tr><td class="param-name">Atomicidade</td><td>A exclusão da solicitação e a atualização do status do plantão ocorrem dentro de uma única <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1323,6 +1445,10 @@ GET /api/v1/vagas/quantidade-total</pre>
           <span class="chevron">▶</span>
         </div>
         <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Retorna apenas trocas com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> direcionadas ao médico autenticado. Os campos <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo</code> e <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_observacao</code> serão <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">null</code> quando o solicitante não informar motivo.</div>
+          </div>
           <pre style="margin-top:12px">[
   {
     <span class="key">"id"</span>: <span class="num">7</span>,
@@ -1337,9 +1463,12 @@ GET /api/v1/vagas/quantidade-total</pre>
     <span class="key">"data"</span>: <span class="str">"10/04/2025"</span>,
     <span class="key">"hora_inicio"</span>: <span class="str">"07:00"</span>,
     <span class="key">"hora_fim"</span>: <span class="str">"19:00"</span>,
+    <span class="key">"motivo"</span>: <span class="str">"Consulta médica"</span>,
+    <span class="key">"motivo_observacao"</span>: <span class="str">"Consulta agendada há 3 meses, não consigo remarcar."</span>,
     <span class="key">"criado_em"</span>: <span class="str">"08/04/2025 09:15"</span>
   }
-]</pre>
+]
+<span class="cmt">// ↑ ATUALIZADO: motivo (string do nome do motivo ou null) e motivo_observacao (texto livre ou null)</span></pre>
         </div>
       </div>
 
@@ -1372,6 +1501,75 @@ GET /api/v1/vagas/quantidade-total</pre>
           <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Reverte o plantão original para status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>.</p>
           <pre><span class="cmt">// Sucesso 200</span>
 { <span class="key">"message"</span>: <span class="str">"Troca recusada."</span> }</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ MOTIVOS DE TROCA -->
+    <div class="section">
+      <div class="section-title">Motivos de Troca</div>
+      <div class="section-desc">Lista de motivos pré-cadastrados que o médico pode selecionar ao solicitar uma troca de plantão. Os motivos são gerenciados pelo administrador no painel web.</div>
+
+      <!-- Listar motivos -->
+      <div class="endpoint" id="motivos-troca-listar">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/api/v1/motivos-troca</span>
+          <span class="endpoint-desc">Listar motivos de troca ativos</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Retorna apenas motivos com <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">ativo: true</code>. Use o <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">id</code> retornado como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_id</code> no body do <a href="#solicitar-troca" style="color:var(--accent)">POST /plantoes/{id}/solicitar-troca</a>. O campo é opcional — a troca pode ser solicitada sem motivo.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'notes')">Observações</button>
+          </div>
+          <div class="tab-panel active" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200 — array direto, sem paginação</span>
+[
+  {
+    <span class="key">"id"</span>: <span class="num">1</span>,
+    <span class="key">"nome"</span>: <span class="str">"Compromisso pessoal"</span>
+  },
+  {
+    <span class="key">"id"</span>: <span class="num">2</span>,
+    <span class="key">"nome"</span>: <span class="str">"Consulta médica"</span>
+  },
+  {
+    <span class="key">"id"</span>: <span class="num">3</span>,
+    <span class="key">"nome"</span>: <span class="str">"Doença"</span>
+  },
+  {
+    <span class="key">"id"</span>: <span class="num">4</span>,
+    <span class="key">"nome"</span>: <span class="str">"Emergência familiar"</span>
+  },
+  {
+    <span class="key">"id"</span>: <span class="num">5</span>,
+    <span class="key">"nome"</span>: <span class="str">"Viagem"</span>
+  },
+  {
+    <span class="key">"id"</span>: <span class="num">6</span>,
+    <span class="key">"nome"</span>: <span class="str">"Outro"</span>
+  }
+]</pre>
+          </div>
+          <div class="tab-panel" data-tab="notes">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Campo</th><th>Tipo</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">id</td><td><span class="param-type">integer</span></td><td>Usar como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_id</code> ao solicitar troca</td></tr>
+              <tr><td class="param-name">nome</td><td><span class="param-type">string</span></td><td>Texto exibido ao médico no seletor da interface</td></tr>
+              </tbody>
+            </table>
+            <div class="alert alert-warn" style="margin-top:12px">
+              <span class="alert-icon">⚠</span>
+              <div>Recomenda-se buscar esta lista dinamicamente ao abrir o fluxo de troca, pois o administrador pode adicionar, remover ou inativar motivos a qualquer momento pelo painel web.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
