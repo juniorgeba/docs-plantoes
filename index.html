@@ -516,6 +516,7 @@
 
     <div class="sidebar-section">Introdução</div>
     <a href="#intro">Visão Geral</a>
+    <a href="#changelog">Novidades 01/05/2026</a>
     <a href="#autenticacao">Autenticação</a>
     <a href="#erros">Erros &amp; Status</a>
 
@@ -537,6 +538,7 @@
     <a href="#plantoes-show"><span class="method-badge get">GET</span> Detalhar</a>
     <a href="#checkin"><span class="method-badge post">POST</span> Check-in</a>
     <a href="#checkout"><span class="method-badge post">POST</span> Check-out</a>
+    <a href="#download-foto"><span class="method-badge get">GET</span> Download Foto</a>
     <a href="#solicitar-troca"><span class="method-badge post">POST</span> Solicitar Troca</a>
     <a href="#reassumir"><span class="method-badge post">POST</span> Reassumir</a>
 
@@ -560,11 +562,15 @@
     <div class="hero" id="intro">
       <div class="hero-tag">Documentação Oficial</div>
       <h1>Plantões <span>API</span></h1>
-      <p>API REST para gerenciamento de plantões médicos. Suporta autenticação via Bearer Token (Laravel Sanctum), controle de vagas, check-in/check-out e fluxo de trocas entre médicos.</p>
+      <p>API REST para gerenciamento de plantões médicos. Suporta autenticação via Bearer Token (Laravel Sanctum), controle de vagas, check-in/check-out com foto e GPS, e fluxo de trocas entre médicos.</p>
       <div class="hero-meta">
         <div class="meta-item">
           <span class="meta-label">Versão</span>
           <span class="meta-value">v1</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Atualizado em</span>
+          <span class="meta-value">01/05/2026</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">Protocolo</span>
@@ -578,6 +584,25 @@
           <span class="meta-label">Auth</span>
           <span class="meta-value">Bearer + API Key</span>
         </div>
+      </div>
+    </div>
+
+
+    <!-- Changelog rapido -->
+    <div class="section" id="changelog" style="margin-bottom:40px">
+      <div class="section-title">Novidades — 01/05/2026</div>
+      <div class="section-desc">Resumo das alteracoes desta versao em relacao a documentacao anterior.</div>
+      <div class="alert alert-info">
+        <span class="alert-icon">&#128247;</span>
+        <div><strong>Check-in e Check-out com Foto + GPS</strong><br>Os endpoints <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/check-in</code> e <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/check-out</code> agora aceitam dois campos opcionais: <strong>foto</strong> (base64 da camera) e <strong>coordenadas</strong> (GPS em formato "lat,lng").</div>
+      </div>
+      <div class="alert alert-purple" style="margin-top:8px">
+        <span class="alert-icon">&#128451;</span>
+        <div><strong>Novos campos na tabela plantoes</strong><br><code style="font-family:var(--mono);font-size:11px">check_in_foto</code> e <code style="font-family:var(--mono);font-size:11px">check_out_foto</code> como LONGTEXT, e <code style="font-family:var(--mono);font-size:11px">check_in_coordenadas</code> e <code style="font-family:var(--mono);font-size:11px">check_out_coordenadas</code> como VARCHAR(50). <strong>Importante:</strong> use LONGTEXT (nao TEXT) para fotos — TEXT tem limite 65KB e causa erro 1406.</div>
+      </div>
+      <div class="alert alert-warn" style="margin-top:8px">
+        <span class="alert-icon">&#127758;</span>
+        <div><strong>Nova rota web</strong>: <code style="font-family:var(--mono);font-size:11px">GET /meus-plantoes/{id}/foto/{tipo}</code> — download da foto de presenca. Tipo aceito: <code style="font-family:var(--mono);font-size:11px">checkin</code> ou <code style="font-family:var(--mono);font-size:11px">checkout</code>. Autenticacao por sessao web (nao Bearer).</div>
       </div>
     </div>
 
@@ -1207,6 +1232,10 @@ GET /api/v1/vagas/quantidade-total</pre>
       <span class="key">"tipo_realizacao"</span>: <span class="str">null</span>,
       <span class="key">"check_in_at"</span>: <span class="str">null</span>,
       <span class="key">"check_out_at"</span>: <span class="str">null</span>,
+      <span class="key">"check_in_coordenadas"</span>: <span class="str">null</span>,
+      <span class="key">"check_out_coordenadas"</span>: <span class="str">null</span>,
+      <span class="key">"tem_foto_checkin"</span>: <span class="bool">false</span>,
+      <span class="key">"tem_foto_checkout"</span>: <span class="bool">false</span>,
       <span class="key">"duracao_realizada"</span>: <span class="str">"—"</span>,
       <span class="key">"diferenca"</span>: <span class="str">"—"</span>,
       <span class="key">"divergencia"</span>: <span class="bool">false</span>,
@@ -1308,16 +1337,64 @@ GET /api/v1/vagas/quantidade-total</pre>
         <div class="endpoint-body">
           <div class="alert alert-info" style="margin-top:12px">
             <span class="alert-icon">ℹ</span>
-            <div>Check-in disponível apenas entre <strong>30 minutos antes</strong> e <strong>2 horas após</strong> o início do plantão. Status deve ser <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>.</div>
+            <div>Check-in disponível apenas entre <strong>30 minutos antes</strong> e <strong>2 horas após</strong> o início do plantão. Status deve ser <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. O campo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">tipo_realizacao</code> é detectado automaticamente (<code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">titular</code> ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">trocado</code>).</div>
           </div>
-          <pre><span class="cmt">// Sucesso 200</span>
+          <div class="alert alert-warn" style="margin-top:0">
+            <span class="alert-icon">📷</span>
+            <div>A partir desta versão, o check-in aceita opcionalmente uma <strong>foto (base64)</strong> e <strong>coordenadas GPS</strong>. Ambos os campos são opcionais — o check-in é realizado normalmente sem eles. A câmera requer <strong>HTTPS</strong> no navegador (ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">localhost</code> para dev).</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'notes')">Observações</button>
+          </div>
+          <div class="tab-panel active" data-tab="body">
+            <table class="params-table">
+              <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">foto</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Imagem capturada pela câmera no formato Data URI (<code style="font-family:var(--mono);font-size:11px">data:image/jpeg;base64,…</code>) ou base64 puro. Armazenada como <code style="font-family:var(--mono);font-size:11px">LONGTEXT</code> no banco.</td></tr>
+              <tr><td class="param-name">coordenadas</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Localização GPS no formato <code style="font-family:var(--mono);font-size:11px">"lat,lng"</code> (ex: <code style="font-family:var(--mono);font-size:11px">"-23.550520,-46.633308"</code>). Capturado via Geolocation API do navegador. Requer HTTPS.</td></tr>
+              </tbody>
+            </table>
+            <pre style="margin-top:12px"><span class="cmt">// Body completo (com foto e GPS)</span>
+{
+  <span class="key">"foto"</span>: <span class="str">"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ…"</span>,
+  <span class="key">"coordenadas"</span>: <span class="str">"-23.550520,-46.633308"</span>
+}
+
+<span class="cmt">// Body mínimo (sem foto, sem GPS) — ainda válido</span>
+{}
+
+<span class="cmt">// Apenas GPS, sem foto</span>
+{
+  <span class="key">"coordenadas"</span>: <span class="str">"-23.550520,-46.633308"</span>
+}</pre>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200</span>
 {
   <span class="key">"message"</span>: <span class="str">"Check-in realizado com sucesso!"</span>,
   <span class="key">"check_in_at"</span>: <span class="str">"07:03"</span>
 }
 
 <span class="cmt">// Erro 422 — fora da janela de tempo</span>
-{ <span class="key">"message"</span>: <span class="str">"Check-in disponível apenas a partir de 30 minutos antes do início do plantão."</span> }</pre>
+{ <span class="key">"message"</span>: <span class="str">"Check-in disponível apenas a partir de 30 minutos antes do início do plantão."</span> }
+
+<span class="cmt">// Erro 422 — status inválido</span>
+{ <span class="key">"message"</span>: <span class="str">"Check-in não permitido neste status."</span> }</pre>
+          </div>
+          <div class="tab-panel" data-tab="notes">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Detalhe</th><th>Informação</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">Formato da foto</td><td>Aceita Data URI completo (<code style="font-family:var(--mono);font-size:11px">data:image/jpeg;base64,…</code>) ou base64 puro. O servidor detecta automaticamente e armazena como recebido.</td></tr>
+              <tr><td class="param-name">Tamanho máximo</td><td>Uma foto JPEG 1280×960 a 85% de qualidade resulta em ~100–200KB de base64. A coluna é <code style="font-family:var(--mono);font-size:11px">LONGTEXT</code> (limite ~4GB). Considere comprimir no cliente para economizar banda.</td></tr>
+              <tr><td class="param-name">Formato de coordenadas</td><td>String <code style="font-family:var(--mono);font-size:11px">"lat,lng"</code> com ponto decimal, até 6 casas (ex: <code style="font-family:var(--mono);font-size:11px">"-23.200522,-45.783761"</code>). Coordenadas inválidas são ignoradas silenciosamente.</td></tr>
+              <tr><td class="param-name">Requisito HTTPS</td><td>A Geolocation API e a câmera (<code style="font-family:var(--mono);font-size:11px">navigator.mediaDevices</code>) só funcionam em HTTPS ou <code style="font-family:var(--mono);font-size:11px">localhost</code>. Em HTTP com IP/domínio sem SSL, ambas as APIs ficam indisponíveis no navegador — o check-in ainda é válido sem esses dados.</td></tr>
+              <tr><td class="param-name">tipo_realizacao</td><td>Detectado automaticamente no check-in: <code style="font-family:var(--mono);font-size:11px">titular</code> se o médico é o original, <code style="font-family:var(--mono);font-size:11px">trocado</code> se assumiu via troca aceita.</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -1331,14 +1408,102 @@ GET /api/v1/vagas/quantidade-total</pre>
           <span class="chevron">▶</span>
         </div>
         <div class="endpoint-body">
-          <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">em_execucao</code>. Calcula divergência automaticamente comparando com a duração prevista da vaga.</p>
-          <pre><span class="cmt">// Sucesso 200</span>
+          <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">em_execucao</code>. Calcula divergência automaticamente comparando com a duração prevista da vaga. Aceita os mesmos campos opcionais de foto e coordenadas do check-in.</p>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+          </div>
+          <div class="tab-panel active" data-tab="body">
+            <table class="params-table">
+              <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">foto</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Foto de encerramento do plantão. Mesmo formato do check-in (Data URI ou base64 puro).</td></tr>
+              <tr><td class="param-name">coordenadas</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>GPS no formato <code style="font-family:var(--mono);font-size:11px">"lat,lng"</code>. Salvo em <code style="font-family:var(--mono);font-size:11px">check_out_coordenadas</code>.</td></tr>
+              </tbody>
+            </table>
+            <pre style="margin-top:12px"><span class="cmt">// Com foto e GPS</span>
+{
+  <span class="key">"foto"</span>: <span class="str">"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ…"</span>,
+  <span class="key">"coordenadas"</span>: <span class="str">"-23.550520,-46.633308"</span>
+}
+
+<span class="cmt">// Sem campos (ainda válido)</span>
+{}</pre>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200</span>
 {
   <span class="key">"message"</span>: <span class="str">"Check-out realizado! Plantão concluído."</span>,
   <span class="key">"duracao_realizada"</span>: <span class="str">"12h5min"</span>,
   <span class="key">"diferenca"</span>: <span class="str">"+5min"</span>,
   <span class="key">"divergencia"</span>: <span class="bool">true</span>
-}</pre>
+}
+
+<span class="cmt">// Erro 422 — status inválido</span>
+{ <span class="key">"message"</span>: <span class="str">"Check-out não permitido neste status."</span> }</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download de foto -->
+      <div class="endpoint" id="download-foto">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/meus-plantoes/{id}/foto/{tipo}</span>
+          <span class="endpoint-desc">Baixar foto de check-in ou check-out</span>
+          <span class="auth-badge">🔒 Bearer (Web)</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-purple" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Esta rota pertence ao <strong>módulo web</strong> (prefixo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">/meus-plantoes</code>), não ao prefixo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">/api/v1</code>. Usada pela interface web para que gestores possam visualizar e baixar as fotos de presença. Requer sessão autenticada (cookie) — não Bearer Token. Use diretamente no browser ou via link.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'params')">Parâmetros</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'access')">Controle de Acesso</button>
+          </div>
+          <div class="tab-panel active" data-tab="params">
+            <table class="params-table">
+              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do plantão</td></tr>
+              <tr><td class="param-name">tipo</td><td><span class="param-type">string</span></td><td><span class="required">✱ obr.</span></td><td>Deve ser <code style="font-family:var(--mono);font-size:11px">checkin</code> ou <code style="font-family:var(--mono);font-size:11px">checkout</code></td></tr>
+              </tbody>
+            </table>
+            <pre style="margin-top:12px"><span class="cmt"># Exemplos</span>
+GET /meus-plantoes/88/foto/checkin
+GET /meus-plantoes/88/foto/checkout</pre>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200 — retorna o arquivo de imagem para download</span>
+<span class="cmt">// Content-Type: image/jpeg (ou image/png, conforme captura)</span>
+<span class="cmt">// Content-Disposition: attachment; filename="checkin_dr-joao-silva_2026-05-01.jpg"</span>
+
+<span class="cmt">// 404 — plantão não tem foto salva</span>
+{ <span class="key">"message"</span>: <span class="str">"Foto não disponível."</span> }
+
+<span class="cmt">// 404 — plantão não encontrado ou sem permissão</span>
+{ <span class="key">"message"</span>: <span class="str">"No query results for model [Plantao]."</span> }
+
+<span class="cmt">// 422 — imagem armazenada está corrompida</span>
+{ <span class="key">"message"</span>: <span class="str">"Imagem corrompida."</span> }</pre>
+            <div class="alert alert-info" style="margin-top:12px">
+              <span class="alert-icon">ℹ</span>
+              <div>O nome do arquivo gerado automaticamente segue o padrão <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">{tipo}_{slug-do-médico}_{data-da-vaga}.{ext}</code>. Ex: <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">checkin_dr-joao-silva_2026-05-01.jpg</code></div>
+            </div>
+          </div>
+          <div class="tab-panel" data-tab="access">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Perfil</th><th>Acesso</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">admin / suporte</td><td>Acessa fotos de qualquer plantão do sistema</td></tr>
+              <tr><td class="param-name">gestão</td><td>Acessa fotos de plantões dos seus contratos</td></tr>
+              <tr><td class="param-name">médico (user)</td><td>Acessa apenas fotos dos seus próprios plantões</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
