@@ -516,7 +516,7 @@
 
     <div class="sidebar-section">Introdução</div>
     <a href="#intro">Visão Geral</a>
-    <a href="#changelog">Novidades 01/05/2026</a>
+    <a href="#changelog">Novidades 07/05/2026</a>
     <a href="#autenticacao">Autenticação</a>
     <a href="#erros">Erros &amp; Status</a>
 
@@ -541,6 +541,10 @@
     <a href="#download-foto"><span class="method-badge get">GET</span> Download Foto</a>
     <a href="#solicitar-troca"><span class="method-badge post">POST</span> Solicitar Troca</a>
     <a href="#reassumir"><span class="method-badge post">POST</span> Reassumir</a>
+    <a href="#desistir"><span class="method-badge post">POST</span> Desistir</a>
+    <a href="#atribuir-medico"><span class="method-badge post">POST</span> Atribuir Médico</a>
+    <a href="#confirmar-realizado"><span class="method-badge post">POST</span> Confirmar Realizado</a>
+    <a href="#nao-compareceu"><span class="method-badge post">POST</span> Não Compareceu</a>
 
     <div class="sidebar-section">Trocas</div>
     <a href="#trocas-pendentes"><span class="method-badge get">GET</span> Pendentes</a>
@@ -570,7 +574,7 @@
         </div>
         <div class="meta-item">
           <span class="meta-label">Atualizado em</span>
-          <span class="meta-value">01/05/2026</span>
+          <span class="meta-value">07/05/2026</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">Protocolo</span>
@@ -590,19 +594,35 @@
 
     <!-- Changelog rapido -->
     <div class="section" id="changelog" style="margin-bottom:40px">
-      <div class="section-title">Novidades — 01/05/2026</div>
-      <div class="section-desc">Resumo das alteracoes desta versao em relacao a documentacao anterior.</div>
-      <div class="alert alert-info">
-        <span class="alert-icon">&#128247;</span>
-        <div><strong>Check-in e Check-out com Foto + GPS</strong><br>Os endpoints <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/check-in</code> e <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/check-out</code> agora aceitam dois campos opcionais: <strong>foto</strong> (base64 da camera) e <strong>coordenadas</strong> (GPS em formato "lat,lng").</div>
+      <div class="section-title">Novidades — 07/05/2026</div>
+      <div class="section-desc">Resumo das alterações desta versão em relação à documentação anterior.</div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Validação de conflito de horário</strong><br>Os endpoints <code style="font-family:var(--mono);font-size:11px">POST /vagas/{id}/assumir</code>, <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/solicitar-troca</code> e <code style="font-family:var(--mono);font-size:11px">POST /trocas/{id}/aceitar</code> agora verificam sobreposição de horário antes de concluir a operação. Se o médico já tiver plantão ativo no mesmo dia com horário conflitante, a API retorna <strong>HTTP 422</strong> com a mensagem de conflito. Ver detalhes nas seções de cada endpoint.</div>
+      </div>
+      <div class="alert alert-info" style="margin-top:8px">
+        <span class="alert-icon">ℹ</span>
+        <div><strong>Objeto <code style="font-family:var(--mono);font-size:11px">conflito</code> no assumir</strong><br>O endpoint <code style="font-family:var(--mono);font-size:11px">POST /vagas/{id}/assumir</code> agora retorna, junto com a mensagem de erro 422, um objeto <code style="font-family:var(--mono);font-size:11px">conflito</code> com os detalhes do plantão que está causando o bloqueio (id, data, horários, hospital e especialidade). Use esse objeto para exibir informação precisa ao médico no app.</div>
       </div>
       <div class="alert alert-purple" style="margin-top:8px">
-        <span class="alert-icon">&#128451;</span>
-        <div><strong>Novos campos na tabela plantoes</strong><br><code style="font-family:var(--mono);font-size:11px">check_in_foto</code> e <code style="font-family:var(--mono);font-size:11px">check_out_foto</code> como LONGTEXT, e <code style="font-family:var(--mono);font-size:11px">check_in_coordenadas</code> e <code style="font-family:var(--mono);font-size:11px">check_out_coordenadas</code> como VARCHAR(50). <strong>Importante:</strong> use LONGTEXT (nao TEXT) para fotos — TEXT tem limite 65KB e causa erro 1406.</div>
+        <span class="alert-icon">&#128101;</span>
+        <div><strong>Status inativos que não bloqueiam</strong><br>A verificação de sobreposição ignora plantões com status <code style="font-family:var(--mono);font-size:11px">cancelado</code>, <code style="font-family:var(--mono);font-size:11px">troca_com_colega</code>, <code style="font-family:var(--mono);font-size:11px">nao_realizada</code> e <code style="font-family:var(--mono);font-size:11px">nao_compareceu</code>. Apenas plantões ativos bloqueiam a atribuição.</div>
       </div>
-      <div class="alert alert-warn" style="margin-top:8px">
-        <span class="alert-icon">&#127758;</span>
-        <div><strong>Nova rota web</strong>: <code style="font-family:var(--mono);font-size:11px">GET /meus-plantoes/{id}/foto/{tipo}</code> — download da foto de presenca. Tipo aceito: <code style="font-family:var(--mono);font-size:11px">checkin</code> ou <code style="font-family:var(--mono);font-size:11px">checkout</code>. Autenticacao por sessao web (nao Bearer).</div>
+
+      <div style="border-top:1px solid var(--border);margin-top:20px;padding-top:20px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px">Versão anterior — 01/05/2026</div>
+        <div class="alert alert-info">
+          <span class="alert-icon">&#128247;</span>
+          <div><strong>Check-in e Check-out com Foto + GPS</strong><br>Os endpoints <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/check-in</code> e <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/check-out</code> aceitam dois campos opcionais: <strong>foto</strong> (base64 da câmera) e <strong>coordenadas</strong> (GPS em formato "lat,lng").</div>
+        </div>
+        <div class="alert alert-purple" style="margin-top:8px">
+          <span class="alert-icon">&#128451;</span>
+          <div><strong>Novos campos na tabela plantoes</strong><br><code style="font-family:var(--mono);font-size:11px">check_in_foto</code> e <code style="font-family:var(--mono);font-size:11px">check_out_foto</code> como LONGTEXT, e <code style="font-family:var(--mono);font-size:11px">check_in_coordenadas</code> e <code style="font-family:var(--mono);font-size:11px">check_out_coordenadas</code> como VARCHAR(50). <strong>Importante:</strong> use LONGTEXT (não TEXT) para fotos — TEXT tem limite 65KB e causa erro 1406.</div>
+        </div>
+        <div class="alert alert-warn" style="margin-top:8px">
+          <span class="alert-icon">&#127758;</span>
+          <div><strong>Rota web de download de foto</strong>: <code style="font-family:var(--mono);font-size:11px">GET /meus-plantoes/{id}/foto/{tipo}</code> — download da foto de presença. Tipo aceito: <code style="font-family:var(--mono);font-size:11px">checkin</code> ou <code style="font-family:var(--mono);font-size:11px">checkout</code>. Autenticação por sessão web (não Bearer).</div>
+        </div>
       </div>
     </div>
 
@@ -873,12 +893,55 @@ Accept: application/json</pre>
         </div>
         <div class="endpoint-body">
           <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Não requer body. O médico deve possuir a especialidade da vaga. Apenas usuários com <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">is_medico: true</code> podem assumir.</p>
-          <pre><span class="cmt">// Sucesso 201</span>
+          <div class="alert alert-warn" style="margin-bottom:12px">
+            <span class="alert-icon">⚠</span>
+            <div><strong>Verificação de sobreposição de horário</strong> — antes de criar o plantão, o sistema verifica se o médico já tem plantão ativo no mesmo dia com horário conflitante. Se houver, retorna <strong>422</strong> com o objeto <code style="font-family:var(--mono);font-size:11px">conflito</code> descrevendo o plantão bloqueador.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+          </div>
+          <div class="tab-panel active" data-tab="response">
+            <pre><span class="cmt">// Sucesso 201</span>
 { <span class="key">"message"</span>: <span class="str">"Vaga assumida com sucesso!"</span> }
 
-<span class="cmt">// Erros possíveis</span>
-<span class="cmt">// 403 — Não é médico ou não tem a especialidade</span>
-<span class="cmt">// 422 — Vaga indisponível ou já assumida</span></pre>
+<span class="cmt">// 403 — usuário não é médico</span>
+{ <span class="key">"message"</span>: <span class="str">"Apenas médicos podem assumir vagas."</span> }
+
+<span class="cmt">// 403 — não possui a especialidade</span>
+{ <span class="key">"message"</span>: <span class="str">"Você não possui a especialidade requerida."</span> }
+
+<span class="cmt">// 422 — vaga não está disponível</span>
+{ <span class="key">"message"</span>: <span class="str">"Vaga não está disponível."</span> }
+
+<span class="cmt">// 422 — vaga já foi assumida</span>
+{ <span class="key">"message"</span>: <span class="str">"Esta vaga já foi assumida."</span> }
+
+<span class="cmt">// 422 — conflito de horário com outro plantão do médico</span>
+{
+  <span class="key">"message"</span>: <span class="str">"Conflito de horário: Dr. João Silva já possui plantão neste dia (15/05/2026) das 07:00 às 19:00 em Hospital São Lucas (Clínica Médica). Verifique a escala antes de prosseguir."</span>,
+  <span class="key">"conflito"</span>: {
+    <span class="key">"plantao_id"</span>: <span class="num">88</span>,
+    <span class="key">"data"</span>: <span class="str">"2026-05-15"</span>,
+    <span class="key">"hora_inicio"</span>: <span class="str">"07:00"</span>,
+    <span class="key">"hora_fim"</span>: <span class="str">"19:00"</span>,
+    <span class="key">"hospital"</span>: <span class="str">"Hospital São Lucas"</span>,
+    <span class="key">"especialidade"</span>: <span class="str">"Clínica Médica"</span>
+  }
+}</pre>
+          </div>
+          <div class="tab-panel" data-tab="rules">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">is_medico</td><td>O usuário autenticado deve ter <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">is_medico: true</code>, caso contrário retorna 403.</td></tr>
+              <tr><td class="param-name">Especialidade</td><td>O médico deve possuir a especialidade da vaga na tabela <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">especialidade_usuario</code>.</td></tr>
+              <tr><td class="param-name">Status da vaga</td><td>A vaga deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">disponivel</code>.</td></tr>
+              <tr><td class="param-name">Sobreposição</td><td>O sistema verifica se o médico tem algum plantão ativo (status diferente de <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelado</code>, <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">troca_com_colega</code>, <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">nao_realizada</code>, <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">nao_compareceu</code>) na mesma data com horário que se intersecte com o da vaga. Plantões que cruzam meia-noite são tratados corretamente.</td></tr>
+              <tr><td class="param-name">Atomicidade</td><td>A criação do plantão e a atualização do status da vaga para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">preenchida</code> ocorrem dentro de uma única <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -1517,6 +1580,10 @@ GET /meus-plantoes/88/foto/checkout</pre>
           <span class="chevron">▶</span>
         </div>
         <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px;margin-bottom:4px">
+            <span class="alert-icon">ℹ</span>
+            <div>Disponível apenas para o médico titular do próprio plantão. O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code> ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">assumido</code>.</div>
+          </div>
           <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
             <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
@@ -1525,7 +1592,7 @@ GET /meus-plantoes/88/foto/checkout</pre>
             <table class="params-table">
               <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
               <tbody>
-              <tr><td class="param-name">substituto_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do médico substituto (deve existir e ter a especialidade)</td></tr>
+              <tr><td class="param-name">substituto_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do médico substituto (deve existir, ter a especialidade e <strong>não ter conflito de horário</strong>)</td></tr>
               <tr><td class="param-name">motivo_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>ID do motivo de troca pré-cadastrado (ver <a href="#motivos-troca-listar" style="color:var(--accent)">GET /motivos-troca</a>). Omitir se não aplicável.</td></tr>
               <tr><td class="param-name">motivo_observacao</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Observação livre sobre o motivo. Máximo 500 caracteres.</td></tr>
               </tbody>
@@ -1544,7 +1611,10 @@ GET /meus-plantoes/88/foto/checkout</pre>
 { <span class="key">"message"</span>: <span class="str">"Só é possível trocar plantões previstos."</span> }
 
 <span class="cmt">// 422 — especialidade incompatível</span>
-{ <span class="key">"message"</span>: <span class="str">"O médico não possui a especialidade requerida."</span> }</pre>
+{ <span class="key">"message"</span>: <span class="str">"O médico não possui a especialidade requerida."</span> }
+
+<span class="cmt">// 422 — substituto tem conflito de horário no mesmo dia</span>
+{ <span class="key">"message"</span>: <span class="str">"O médico selecionado já possui plantão neste horário. Conflito de horário: Dr. Pedro Lima já possui plantão neste dia (15/05/2026) das 07:00 às 19:00 em Hospital Santa Cruz (Clínica Médica). Verifique a escala antes de prosseguir."</span> }</pre>
           </div>
         </div>
       </div>
@@ -1591,6 +1661,157 @@ GET /meus-plantoes/88/foto/checkout</pre>
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+      <!-- Desistir do plantão -->
+      <div class="endpoint" id="desistir">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill post">POST</span>
+          <span class="endpoint-path">/api/v1/plantoes/{id}/desistir</span>
+          <span class="endpoint-desc">Médico desiste do próprio plantão, devolvendo a vaga</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Não requer body. Devolve a vaga para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">disponivel</code> e cancela o plantão. A mensagem de retorno varia conforme o perfil do solicitante.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+          </div>
+          <div class="tab-panel active" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200 — médico desistindo do próprio plantão</span>
+{ <span class="key">"message"</span>: <span class="str">"Você desistiu do plantão. A vaga foi devolvida."</span> }
+
+<span class="cmt">// Sucesso 200 — gestor/admin cancelando em nome do médico</span>
+{ <span class="key">"message"</span>: <span class="str">"Plantão de Dr. João Silva cancelado. Vaga devolvida como disponível."</span> }
+
+<span class="cmt">// 403/404 — médico tentando desistir de plantão de outro (query filtra por usuario_id)</span>
+{ <span class="key">"message"</span>: <span class="str">"No query results for model [Plantao]."</span> }
+
+<span class="cmt">// 422 — status inválido</span>
+{ <span class="key">"message"</span>: <span class="str">"Só é possível desistir de plantões com status Prevista."</span> }</pre>
+          </div>
+          <div class="tab-panel" data-tab="rules">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">Quem pode</td><td>O médico titular (<code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">perfil = user</code>) só pode desistir do próprio plantão. Admin, suporte e gestão podem cancelar qualquer plantão de qualquer médico.</td></tr>
+              <tr><td class="param-name">Status exigido</td><td>O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code> ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">assumido</code>. Qualquer outro status retorna 422.</td></tr>
+              <tr><td class="param-name">Efeito na vaga</td><td>A vaga retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">disponivel</code>, podendo ser assumida por outro médico.</td></tr>
+              <tr><td class="param-name">Efeito no plantão</td><td>O plantão passa para status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelado</code>. O histórico é preservado.</td></tr>
+              <tr><td class="param-name">Atomicidade</td><td>Atualização da vaga e do plantão dentro de <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Atribuir médico a uma vaga (gestor/admin) -->
+      <div class="endpoint" id="atribuir-medico">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill post">POST</span>
+          <span class="endpoint-path">/api/v1/vagas/{id}/atribuir</span>
+          <span class="endpoint-desc">Gestor/admin atribui diretamente um médico a uma vaga disponível</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Exclusiva para admin, suporte e gestão. Permite atribuir um médico a uma vaga sem depender de o próprio médico assumir pelo app. Também valida conflito de horário.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+          </div>
+          <div class="tab-panel active" data-tab="body">
+            <table class="params-table">
+              <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">medico_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do usuário médico a ser atribuído. Deve ter <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">is_medico: true</code> e possuir a especialidade da vaga.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 201</span>
+{ <span class="key">"message"</span>: <span class="str">"Médico Dr. João Silva atribuído à vaga com sucesso!"</span> }
+
+<span class="cmt">// 403 — perfil sem permissão</span>
+{ <span class="key">"message"</span>: <span class="str">"Acesso não autorizado."</span> }
+
+<span class="cmt">// 403 — gestão tentando atribuir em vaga de contrato alheio</span>
+{ <span class="key">"message"</span>: <span class="str">"Acesso não autorizado a esta vaga."</span> }
+
+<span class="cmt">// 422 — usuário não é médico</span>
+<span class="str">"O usuário selecionado não é médico."</span>
+
+<span class="cmt">// 422 — vaga não está disponível</span>
+<span class="str">"Esta vaga não está mais disponível."</span>
+
+<span class="cmt">// 422 — médico não possui a especialidade</span>
+<span class="str">"O médico não possui a especialidade requerida para esta vaga."</span>
+
+<span class="cmt">// 422 — conflito de horário com outro plantão do médico</span>
+<span class="str">"Conflito de horário: Dr. João Silva já possui plantão neste dia (15/05/2026) das 07:00 às 19:00 em Hospital São Lucas (Clínica Médica). Verifique a escala antes de prosseguir."</span></pre>
+          </div>
+          <div class="tab-panel" data-tab="rules">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">Acesso</td><td>Restrito a <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">admin</code>, <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">suporte</code> e <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">gestao</code>.</td></tr>
+              <tr><td class="param-name">Sobreposição</td><td>Mesma lógica do endpoint de assumir: verifica conflito de horário antes de criar o plantão. Retorna mensagem amigável se houver bloqueio.</td></tr>
+              <tr><td class="param-name">Atomicidade</td><td>Criação do plantão e atualização da vaga para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">preenchida</code> dentro de <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmar realizado (gestão) -->
+      <div class="endpoint" id="confirmar-realizado">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill post">POST</span>
+          <span class="endpoint-path">/api/v1/plantoes/{id}/realizado</span>
+          <span class="endpoint-desc">Gestor/admin marca plantão como realizado manualmente</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-info" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Exclusiva para admin, suporte e gestão. Usada quando o médico não fez check-out mas o plantão foi efetivamente realizado. Gestão só acessa plantões dos próprios contratos. Não requer body.</div>
+          </div>
+          <pre style="margin-top:12px"><span class="cmt">// Sucesso 200</span>
+{ <span class="key">"message"</span>: <span class="str">"Plantão confirmado como realizado!"</span> }
+
+<span class="cmt">// 403 — perfil sem permissão</span>
+{ <span class="key">"message"</span>: <span class="str">"Acesso não autorizado."</span> }</pre>
+        </div>
+      </div>
+
+      <!-- Não compareceu (gestão) -->
+      <div class="endpoint" id="nao-compareceu">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill post">POST</span>
+          <span class="endpoint-path">/api/v1/plantoes/{id}/nao-compareceu</span>
+          <span class="endpoint-desc">Gestor/admin marca plantão como não realizado, devolvendo a vaga</span>
+          <span class="auth-badge">🔒 Bearer</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-warn" style="margin-top:12px">
+            <span class="alert-icon">⚠</span>
+            <div>Exclusiva para admin, suporte e gestão. Gestão só acessa plantões dos próprios contratos. Marca o plantão como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">nao_realizada</code> e <strong>devolve a vaga para disponível</strong>. Não requer body.</div>
+          </div>
+          <pre style="margin-top:12px"><span class="cmt">// Sucesso 200</span>
+{ <span class="key">"message"</span>: <span class="str">"Plantão marcado como não realizado. Vaga devolvida como disponível."</span> }
+
+<span class="cmt">// 403 — perfil sem permissão</span>
+{ <span class="key">"message"</span>: <span class="str">"Acesso não autorizado."</span> }</pre>
         </div>
       </div>
     </div>
@@ -1648,8 +1869,35 @@ GET /meus-plantoes/88/foto/checkout</pre>
         </div>
         <div class="endpoint-body">
           <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Não requer body. Cria automaticamente um novo plantão para o substituto e atualiza o status do plantão original para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">troca_com_colega</code>.</p>
-          <pre><span class="cmt">// Sucesso 200</span>
-{ <span class="key">"message"</span>: <span class="str">"Troca aceita! O plantão está confirmado para você."</span> }</pre>
+          <div class="alert alert-warn" style="margin-bottom:12px">
+            <span class="alert-icon">⚠</span>
+            <div><strong>Verificação de sobreposição no momento de aceitar</strong> — ao aceitar, o sistema re-verifica se o médico (o substituto que está aceitando) ainda não tem conflito de horário naquela data. Se entre a solicitação e o aceite o médico tiver assumido outro plantão conflitante, o aceite será bloqueado com 422. A verificação ignora o plantão original da troca para não gerar falso conflito consigo mesmo.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+          </div>
+          <div class="tab-panel active" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200</span>
+{ <span class="key">"message"</span>: <span class="str">"Troca aceita! O plantão está confirmado para você."</span> }
+
+<span class="cmt">// 422 — substituto adquiriu conflito de horário entre a solicitação e o aceite</span>
+{ <span class="key">"message"</span>: <span class="str">"Não é possível aceitar a troca: você já possui plantão neste horário. Conflito de horário: Dr. Pedro Lima já possui plantão neste dia (15/05/2026) das 07:00 às 19:00 em Hospital Santa Cruz (Clínica Médica). Verifique a escala antes de prosseguir."</span> }
+
+<span class="cmt">// 404 — solicitação não encontrada ou não pertence ao médico</span>
+{ <span class="key">"message"</span>: <span class="str">"No query results for model [SolicitacaoTroca]."</span> }</pre>
+          </div>
+          <div class="tab-panel" data-tab="rules">
+            <table class="params-table" style="margin-top:8px">
+              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">Dono da solicitação</td><td>A query filtra por <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">substituto_id = usuario_id</code>, portanto apenas o médico que recebeu a solicitação pode aceitá-la.</td></tr>
+              <tr><td class="param-name">Status da solicitação</td><td>Apenas solicitações com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> podem ser aceitas.</td></tr>
+              <tr><td class="param-name">Sobreposição</td><td>Re-verifica conflito de horário no momento do aceite. O plantão original da troca é excluído da checagem para evitar falso positivo.</td></tr>
+              <tr><td class="param-name">Efeito</td><td>Plantão original → <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">troca_com_colega</code>. Novo plantão criado para o substituto com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Solicitação → <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">aceita</code>. Tudo em <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
