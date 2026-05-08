@@ -539,6 +539,7 @@
     <a href="#checkin"><span class="method-badge post">POST</span> Check-in</a>
     <a href="#checkout"><span class="method-badge post">POST</span> Check-out</a>
     <a href="#download-foto"><span class="method-badge get">GET</span> Download Foto</a>
+    <a href="#download-anexo"><span class="method-badge get">GET</span> Download Anexo</a>
     <a href="#solicitar-troca"><span class="method-badge post">POST</span> Solicitar Troca</a>
     <a href="#reassumir"><span class="method-badge post">POST</span> Reassumir</a>
     <a href="#desistir"><span class="method-badge post">POST</span> Desistir</a>
@@ -574,7 +575,7 @@
         </div>
         <div class="meta-item">
           <span class="meta-label">Atualizado em</span>
-          <span class="meta-value">07/05/2026</span>
+          <span class="meta-value">08/05/2026</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">Protocolo</span>
@@ -594,19 +595,35 @@
 
     <!-- Changelog rapido -->
     <div class="section" id="changelog" style="margin-bottom:40px">
-      <div class="section-title">Novidades — 07/05/2026</div>
+      <div class="section-title">Novidades — 08/05/2026</div>
       <div class="section-desc">Resumo das alterações desta versão em relação à documentação anterior.</div>
-      <div class="alert alert-warn">
-        <span class="alert-icon">⚠</span>
-        <div><strong>Validação de conflito de horário</strong><br>Os endpoints <code style="font-family:var(--mono);font-size:11px">POST /vagas/{id}/assumir</code>, <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/solicitar-troca</code> e <code style="font-family:var(--mono);font-size:11px">POST /trocas/{id}/aceitar</code> agora verificam sobreposição de horário antes de concluir a operação. Se o médico já tiver plantão ativo no mesmo dia com horário conflitante, a API retorna <strong>HTTP 422</strong> com a mensagem de conflito. Ver detalhes nas seções de cada endpoint.</div>
-      </div>
-      <div class="alert alert-info" style="margin-top:8px">
-        <span class="alert-icon">ℹ</span>
-        <div><strong>Objeto <code style="font-family:var(--mono);font-size:11px">conflito</code> no assumir</strong><br>O endpoint <code style="font-family:var(--mono);font-size:11px">POST /vagas/{id}/assumir</code> agora retorna, junto com a mensagem de erro 422, um objeto <code style="font-family:var(--mono);font-size:11px">conflito</code> com os detalhes do plantão que está causando o bloqueio (id, data, horários, hospital e especialidade). Use esse objeto para exibir informação precisa ao médico no app.</div>
+      <div class="alert alert-info">
+        <span class="alert-icon">📎</span>
+        <div><strong>Anexo de documento no check-out (módulo web)</strong><br>O check-out via interface web agora aceita um arquivo opcional de até <strong>5MB</strong> como comprovante (lista de presença, atestado, etc.). Tipos permitidos: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX, ODT, ODS, TXT. O arquivo é armazenado em <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">storage/app/private/plantoes/anexos/</code> — não fica exposto publicamente. Download autenticado via rota web <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">GET /meus-plantoes/{id}/anexo</code>.</div>
       </div>
       <div class="alert alert-purple" style="margin-top:8px">
-        <span class="alert-icon">&#128101;</span>
-        <div><strong>Status inativos que não bloqueiam</strong><br>A verificação de sobreposição ignora plantões com status <code style="font-family:var(--mono);font-size:11px">cancelado</code>, <code style="font-family:var(--mono);font-size:11px">troca_com_colega</code>, <code style="font-family:var(--mono);font-size:11px">nao_realizada</code> e <code style="font-family:var(--mono);font-size:11px">nao_compareceu</code>. Apenas plantões ativos bloqueiam a atribuição.</div>
+        <span class="alert-icon">ℹ</span>
+        <div><strong>Novo campo <code style="font-family:var(--mono);font-size:11px">tem_anexo_checkout</code> na API</strong><br>O objeto plantão retornado pelos endpoints <code style="font-family:var(--mono);font-size:11px">GET /api/v1/plantoes</code> e <code style="font-family:var(--mono);font-size:11px">GET /api/v1/plantoes/{id}</code> agora inclui o campo booleano <code style="font-family:var(--mono);font-size:11px">tem_anexo_checkout</code>. Use-o no app React para exibir um indicador ou botão de download quando o médico anexou um documento ao fazer check-out.</div>
+      </div>
+      <div class="alert alert-warn" style="margin-top:8px">
+        <span class="alert-icon">🗄</span>
+        <div><strong>Nova coluna na tabela <code style="font-family:var(--mono);font-size:11px">plantoes</code></strong><br>Coluna <code style="font-family:var(--mono);font-size:11px">check_out_anexo</code> (VARCHAR 500, nullable) — armazena o caminho relativo do arquivo dentro do storage.</code>.</div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);margin-top:20px;padding-top:20px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px">Versão anterior — 07/05/2026</div>
+        <div class="alert alert-warn">
+          <span class="alert-icon">⚠</span>
+          <div><strong>Validação de conflito de horário</strong><br>Os endpoints <code style="font-family:var(--mono);font-size:11px">POST /vagas/{id}/assumir</code>, <code style="font-family:var(--mono);font-size:11px">POST /plantoes/{id}/solicitar-troca</code> e <code style="font-family:var(--mono);font-size:11px">POST /trocas/{id}/aceitar</code> agora verificam sobreposição de horário antes de concluir a operação. Se o médico já tiver plantão ativo no mesmo dia com horário conflitante, a API retorna <strong>HTTP 422</strong> com a mensagem de conflito. Ver detalhes nas seções de cada endpoint.</div>
+        </div>
+        <div class="alert alert-info" style="margin-top:8px">
+          <span class="alert-icon">ℹ</span>
+          <div><strong>Objeto <code style="font-family:var(--mono);font-size:11px">conflito</code> no assumir</strong><br>O endpoint <code style="font-family:var(--mono);font-size:11px">POST /vagas/{id}/assumir</code> agora retorna, junto com a mensagem de erro 422, um objeto <code style="font-family:var(--mono);font-size:11px">conflito</code> com os detalhes do plantão que está causando o bloqueio (id, data, horários, hospital e especialidade). Use esse objeto para exibir informação precisa ao médico no app.</div>
+        </div>
+        <div class="alert alert-purple" style="margin-top:8px">
+          <span class="alert-icon">&#128101;</span>
+          <div><strong>Status inativos que não bloqueiam</strong><br>A verificação de sobreposição ignora plantões com status <code style="font-family:var(--mono);font-size:11px">cancelado</code>, <code style="font-family:var(--mono);font-size:11px">troca_com_colega</code>, <code style="font-family:var(--mono);font-size:11px">nao_realizada</code> e <code style="font-family:var(--mono);font-size:11px">nao_compareceu</code>. Apenas plantões ativos bloqueiam a atribuição.</div>
+        </div>
       </div>
 
       <div style="border-top:1px solid var(--border);margin-top:20px;padding-top:20px">
@@ -1299,6 +1316,7 @@ GET /api/v1/vagas/quantidade-total</pre>
       <span class="key">"check_out_coordenadas"</span>: <span class="str">null</span>,
       <span class="key">"tem_foto_checkin"</span>: <span class="bool">false</span>,
       <span class="key">"tem_foto_checkout"</span>: <span class="bool">false</span>,
+      <span class="key">"tem_anexo_checkout"</span>: <span class="bool">false</span>,
       <span class="key">"duracao_realizada"</span>: <span class="str">"—"</span>,
       <span class="key">"diferenca"</span>: <span class="str">"—"</span>,
       <span class="key">"divergencia"</span>: <span class="bool">false</span>,
@@ -1471,27 +1489,25 @@ GET /api/v1/vagas/quantidade-total</pre>
           <span class="chevron">▶</span>
         </div>
         <div class="endpoint-body">
-          <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">em_execucao</code>. Calcula divergência automaticamente comparando com a duração prevista da vaga. Aceita os mesmos campos opcionais de foto e coordenadas do check-in.</p>
+          <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">em_execucao</code>. Calcula divergência automaticamente comparando com a duração prevista da vaga.</p>
+          <div class="alert alert-warn" style="margin-top:0">
+            <span class="alert-icon">📎</span>
+            <div><strong>Endpoint aceita dois formatos de envio:</strong> <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">application/json</code> (sem anexo) ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">multipart/form-data</code> (quando há arquivo). Use <strong>sempre</strong> <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">multipart/form-data</code> no app React para simplificar — campos de texto funcionam normalmente em ambos os formatos.</div>
+          </div>
           <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
             <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'exemplos')">Exemplos React</button>
           </div>
           <div class="tab-panel active" data-tab="body">
             <table class="params-table">
               <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
               <tbody>
-              <tr><td class="param-name">foto</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Foto de encerramento do plantão. Mesmo formato do check-in (Data URI ou base64 puro).</td></tr>
-              <tr><td class="param-name">coordenadas</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>GPS no formato <code style="font-family:var(--mono);font-size:11px">"lat,lng"</code>. Salvo em <code style="font-family:var(--mono);font-size:11px">check_out_coordenadas</code>.</td></tr>
+              <tr><td class="param-name">foto</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Foto de encerramento. Data URI (<code style="font-family:var(--mono);font-size:11px">data:image/jpeg;base64,…</code>) ou base64 puro. Enviado como campo de texto no multipart.</td></tr>
+              <tr><td class="param-name">coordenadas</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>GPS no formato <code style="font-family:var(--mono);font-size:11px">"lat,lng"</code>. Ex: <code style="font-family:var(--mono);font-size:11px">"-23.550520,-46.633308"</code>.</td></tr>
+              <tr><td class="param-name">anexo</td><td><span class="param-type">file</span></td><td><span class="optional">opc.</span></td><td>Documento comprobatório (lista de presença, atestado, etc.). Máx. <strong>5MB</strong>. Tipos aceitos: <code style="font-family:var(--mono);font-size:11px">pdf, jpg, jpeg, png, doc, docx, xls, xlsx, odt, ods, txt</code>. Requer <code style="font-family:var(--mono);font-size:11px">Content-Type: multipart/form-data</code>.</td></tr>
               </tbody>
             </table>
-            <pre style="margin-top:12px"><span class="cmt">// Com foto e GPS</span>
-{
-  <span class="key">"foto"</span>: <span class="str">"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ…"</span>,
-  <span class="key">"coordenadas"</span>: <span class="str">"-23.550520,-46.633308"</span>
-}
-
-<span class="cmt">// Sem campos (ainda válido)</span>
-{}</pre>
           </div>
           <div class="tab-panel" data-tab="response">
             <pre><span class="cmt">// Sucesso 200</span>
@@ -1499,11 +1515,86 @@ GET /api/v1/vagas/quantidade-total</pre>
   <span class="key">"message"</span>: <span class="str">"Check-out realizado! Plantão concluído."</span>,
   <span class="key">"duracao_realizada"</span>: <span class="str">"12h5min"</span>,
   <span class="key">"diferenca"</span>: <span class="str">"+5min"</span>,
-  <span class="key">"divergencia"</span>: <span class="bool">true</span>
+  <span class="key">"divergencia"</span>: <span class="bool">true</span>,
+  <span class="key">"tem_anexo_checkout"</span>: <span class="bool">true</span>
 }
 
 <span class="cmt">// Erro 422 — status inválido</span>
-{ <span class="key">"message"</span>: <span class="str">"Check-out não permitido neste status."</span> }</pre>
+{ <span class="key">"message"</span>: <span class="str">"Check-out não permitido neste status."</span> }
+
+<span class="cmt">// Erro 422 — arquivo maior que 5MB</span>
+{ <span class="key">"message"</span>: <span class="str">"O arquivo deve ter no máximo 5MB."</span> }
+
+<span class="cmt">// Erro 422 — tipo de arquivo não permitido</span>
+{ <span class="key">"message"</span>: <span class="str">"Tipos permitidos: PDF, imagens (JPG, PNG), documentos Word/Excel/OpenDocument e TXT."</span> }</pre>
+          </div>
+          <div class="tab-panel" data-tab="exemplos">
+            <pre><span class="cmt">// ── Exemplo 1: sem anexo (JSON simples) ───────────────</span>
+<span class="cmt">// Content-Type: application/json</span>
+
+<span class="key">const</span> res = <span class="key">await</span> fetch(<span class="str">`/api/v1/plantoes/${id}/check-out`</span>, {
+  method: <span class="str">'POST'</span>,
+  headers: {
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${token}`</span>,
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+  },
+  body: JSON.stringify({
+    foto: fotoBase64,          <span class="cmt">// opcional</span>
+    coordenadas: <span class="str">'-23.55,-46.63'</span>, <span class="cmt">// opcional</span>
+  }),
+});
+
+
+<span class="cmt">// ── Exemplo 2: com anexo (multipart/form-data) ────────</span>
+<span class="cmt">// Não definir Content-Type — o browser/fetch define automaticamente</span>
+<span class="cmt">// com o boundary correto ao usar FormData.</span>
+
+<span class="key">const</span> form = <span class="key">new</span> FormData();
+
+<span class="cmt">// Campos de texto — adicionados normalmente ao FormData</span>
+<span class="key">if</span> (fotoBase64) form.append(<span class="str">'foto'</span>, fotoBase64);
+<span class="key">if</span> (coordenadas) form.append(<span class="str">'coordenadas'</span>, coordenadas);
+
+<span class="cmt">// Arquivo — objeto File do input ou do DocumentPicker (RN)</span>
+<span class="key">if</span> (arquivo) form.append(<span class="str">'anexo'</span>, arquivo, arquivo.name);
+
+<span class="key">const</span> res = <span class="key">await</span> fetch(<span class="str">`/api/v1/plantoes/${id}/check-out`</span>, {
+  method: <span class="str">'POST'</span>,
+  headers: {
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${token}`</span>,
+    <span class="cmt">// NÃO definir Content-Type aqui — o fetch define com boundary automático</span>
+  },
+  body: form,
+});
+
+<span class="key">const</span> data = <span class="key">await</span> res.json();
+<span class="cmt">// data.tem_anexo_checkout === true  → arquivo salvo com sucesso</span>
+
+
+<span class="cmt">// ── React Native (Expo): DocumentPicker + fetch ────────</span>
+<span class="key">import</span> * <span class="key">as</span> DocumentPicker <span class="key">from</span> <span class="str">'expo-document-picker'</span>;
+
+<span class="key">const</span> resultado = <span class="key">await</span> DocumentPicker.getDocumentAsync({
+  type: [<span class="str">'application/pdf'</span>, <span class="str">'image/*'</span>],
+  copyToCacheDirectory: <span class="bool">true</span>,
+});
+
+<span class="key">if</span> (resultado.assets?.[<span class="num">0</span>]) {
+  <span class="key">const</span> arquivo = resultado.assets[<span class="num">0</span>];
+  <span class="key">const</span> form = <span class="key">new</span> FormData();
+  form.append(<span class="str">'anexo'</span>, {
+    uri:  arquivo.uri,
+    name: arquivo.name,
+    type: arquivo.mimeType ?? <span class="str">'application/octet-stream'</span>,
+  } <span class="key">as any</span>);
+  <span class="cmt">// ... adicionar foto e coordenadas se houver</span>
+
+  <span class="key">await</span> fetch(<span class="str">`/api/v1/plantoes/${id}/check-out`</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: { <span class="str">'Authorization'</span>: <span class="str">`Bearer ${token}`</span> },
+    body: form,
+  });
+}</pre>
           </div>
         </div>
       </div>
@@ -1552,58 +1643,155 @@ GET /meus-plantoes/88/foto/checkout</pre>
 
 <span class="cmt">// 422 — imagem armazenada está corrompida</span>
 { <span class="key">"message"</span>: <span class="str">"Imagem corrompida."</span> }</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download de anexo -->
+      <div class="endpoint" id="download-anexo">
+        <div class="endpoint-header" onclick="toggleEndpoint(this)">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/meus-plantoes/{id}/anexo</span>
+          <span class="endpoint-desc">Baixar documento anexado ao check-out</span>
+          <span class="auth-badge">🔒 Bearer (Web)</span>
+          <span class="chevron">▶</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="alert alert-purple" style="margin-top:12px">
+            <span class="alert-icon">ℹ</span>
+            <div>Esta rota pertence ao <strong>módulo web</strong> (prefixo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">/meus-plantoes</code>), não ao prefixo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">/api/v1</code>. O arquivo é armazenado em storage privado — não acessível por URL pública. Requer sessão autenticada (cookie) — não Bearer Token.</div>
+          </div>
+          <div class="alert alert-info" style="margin-top:0">
+            <span class="alert-icon">📎</span>
+            <div>Use o campo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">tem_anexo_checkout: true</code> no objeto plantão da API para decidir quando exibir o botão de download no app React. O download em si é feito abrindo esta URL web no browser.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'params')">Parâmetros</button>
+            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+            <button class="tab-btn" onclick="switchTab(this,'access')">Controle de Acesso</button>
+          </div>
+          <div class="tab-panel active" data-tab="params">
+            <table class="params-table">
+              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+              <tbody>
+              <tr><td class="param-name">id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do plantão</td></tr>
+              </tbody>
+            </table>
+            <pre style="margin-top:12px"><span class="cmt"># Exemplo</span>
+GET /meus-plantoes/88/anexo</pre>
+          </div>
+          <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200 — retorna o arquivo para download</span>
+<span class="cmt">// Content-Type: application/pdf (ou conforme extensão do arquivo)</span>
+<span class="cmt">// Content-Disposition: attachment; filename="anexo_checkout_dr-joao-silva_2026-05-08.pdf"</span>
+
+<span class="cmt">// 404 — plantão não tem anexo</span>
+{ <span class="key">"message"</span>: <span class="str">"Anexo não disponível."</span> }
+
+<span class="cmt">// 404 — arquivo não encontrado no servidor</span>
+{ <span class="key">"message"</span>: <span class="str">"Arquivo não encontrado no servidor."</span> }
+
+<span class="cmt">// 404 — plantão não encontrado ou sem permissão</span>
+{ <span class="key">"message"</span>: <span class="str">"No query results for model [Plantao]."</span> }</pre>
             <div class="alert alert-info" style="margin-top:12px">
               <span class="alert-icon">ℹ</span>
-              <div>O nome do arquivo gerado automaticamente segue o padrão <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">{tipo}_{slug-do-médico}_{data-da-vaga}.{ext}</code>. Ex: <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">checkin_dr-joao-silva_2026-05-01.jpg</code></div>
+              <div>O nome do arquivo gerado segue o padrão <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">anexo_checkout_{slug-do-médico}_{data-da-vaga}.{ext}</code>. Ex: <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">anexo_checkout_dra-maria-silva_2026-05-08.pdf</code></div>
             </div>
           </div>
           <div class="tab-panel" data-tab="access">
             <table class="params-table" style="margin-top:8px">
               <thead><tr><th>Perfil</th><th>Acesso</th></tr></thead>
               <tbody>
-              <tr><td class="param-name">admin / suporte</td><td>Acessa fotos de qualquer plantão do sistema</td></tr>
-              <tr><td class="param-name">gestão</td><td>Acessa fotos de plantões dos seus contratos</td></tr>
-              <tr><td class="param-name">médico (user)</td><td>Acessa apenas fotos dos seus próprios plantões</td></tr>
+              <tr><td class="param-name">admin / suporte</td><td>Acessa qualquer plantão</td></tr>
+              <tr><td class="param-name">gestao</td><td>Apenas plantões dos seus contratos</td></tr>
+              <tr><td class="param-name">medico (user)</td><td>Apenas seus próprios plantões</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'params')">Parâmetros</button>
+        <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+        <button class="tab-btn" onclick="switchTab(this,'access')">Controle de Acesso</button>
+      </div>
+      <div class="tab-panel active" data-tab="params">
+        <table class="params-table">
+          <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+          <tbody>
+          <tr><td class="param-name">id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do plantão</td></tr>
+          <tr><td class="param-name">tipo</td><td><span class="param-type">string</span></td><td><span class="required">✱ obr.</span></td><td>Deve ser <code style="font-family:var(--mono);font-size:11px">checkin</code> ou <code style="font-family:var(--mono);font-size:11px">checkout</code></td></tr>
+          </tbody>
+        </table>
+        <pre style="margin-top:12px"><span class="cmt"># Exemplos</span>
+GET /meus-plantoes/88/foto/checkin
+GET /meus-plantoes/88/foto/checkout</pre>
+      </div>
+      <div class="tab-panel" data-tab="response">
+            <pre><span class="cmt">// Sucesso 200 — retorna o arquivo de imagem para download</span>
+<span class="cmt">// Content-Type: image/jpeg (ou image/png, conforme captura)</span>
+<span class="cmt">// Content-Disposition: attachment; filename="checkin_dr-joao-silva_2026-05-01.jpg"</span>
 
-      <!-- Solicitar troca -->
-      <div class="endpoint" id="solicitar-troca">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/plantoes/{id}/solicitar-troca</span>
-          <span class="endpoint-desc">Solicitar troca de plantão com outro médico</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
+<span class="cmt">// 404 — plantão não tem foto salva</span>
+{ <span class="key">"message"</span>: <span class="str">"Foto não disponível."</span> }
+
+<span class="cmt">// 404 — plantão não encontrado ou sem permissão</span>
+{ <span class="key">"message"</span>: <span class="str">"No query results for model [Plantao]."</span> }
+
+<span class="cmt">// 422 — imagem armazenada está corrompida</span>
+{ <span class="key">"message"</span>: <span class="str">"Imagem corrompida."</span> }</pre>
+        <div class="alert alert-info" style="margin-top:12px">
+          <span class="alert-icon">ℹ</span>
+          <div>O nome do arquivo gerado automaticamente segue o padrão <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">{tipo}_{slug-do-médico}_{data-da-vaga}.{ext}</code>. Ex: <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">checkin_dr-joao-silva_2026-05-01.jpg</code></div>
         </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px;margin-bottom:4px">
-            <span class="alert-icon">ℹ</span>
-            <div>Disponível apenas para o médico titular do próprio plantão. O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code> ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">assumido</code>.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
-            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
-          </div>
-          <div class="tab-panel active" data-tab="body">
-            <table class="params-table">
-              <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">substituto_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do médico substituto (deve existir, ter a especialidade e <strong>não ter conflito de horário</strong>)</td></tr>
-              <tr><td class="param-name">motivo_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>ID do motivo de troca pré-cadastrado (ver <a href="#motivos-troca-listar" style="color:var(--accent)">GET /motivos-troca</a>). Omitir se não aplicável.</td></tr>
-              <tr><td class="param-name">motivo_observacao</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Observação livre sobre o motivo. Máximo 500 caracteres.</td></tr>
-              </tbody>
-            </table>
-            <pre style="margin-top:12px">{
+      </div>
+      <div class="tab-panel" data-tab="access">
+        <table class="params-table" style="margin-top:8px">
+          <thead><tr><th>Perfil</th><th>Acesso</th></tr></thead>
+          <tbody>
+          <tr><td class="param-name">admin / suporte</td><td>Acessa fotos de qualquer plantão do sistema</td></tr>
+          <tr><td class="param-name">gestão</td><td>Acessa fotos de plantões dos seus contratos</td></tr>
+          <tr><td class="param-name">médico (user)</td><td>Acessa apenas fotos dos seus próprios plantões</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+
+<!-- Solicitar troca -->
+<div class="endpoint" id="solicitar-troca">
+  <div class="endpoint-header" onclick="toggleEndpoint(this)">
+    <span class="method-pill post">POST</span>
+    <span class="endpoint-path">/api/v1/plantoes/{id}/solicitar-troca</span>
+    <span class="endpoint-desc">Solicitar troca de plantão com outro médico</span>
+    <span class="auth-badge">🔒 Bearer</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="endpoint-body">
+    <div class="alert alert-info" style="margin-top:12px;margin-bottom:4px">
+      <span class="alert-icon">ℹ</span>
+      <div>Disponível apenas para o médico titular do próprio plantão. O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code> ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">assumido</code>.</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
+      <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+    </div>
+    <div class="tab-panel active" data-tab="body">
+      <table class="params-table">
+        <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+        <tbody>
+        <tr><td class="param-name">substituto_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do médico substituto (deve existir, ter a especialidade e <strong>não ter conflito de horário</strong>)</td></tr>
+        <tr><td class="param-name">motivo_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>ID do motivo de troca pré-cadastrado (ver <a href="#motivos-troca-listar" style="color:var(--accent)">GET /motivos-troca</a>). Omitir se não aplicável.</td></tr>
+        <tr><td class="param-name">motivo_observacao</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Observação livre sobre o motivo. Máximo 500 caracteres.</td></tr>
+        </tbody>
+      </table>
+      <pre style="margin-top:12px">{
   <span class="key">"substituto_id"</span>: <span class="num">55</span>,
   <span class="key">"motivo_id"</span>: <span class="num">2</span>,
   <span class="key">"motivo_observacao"</span>: <span class="str">"Consulta médica agendada há 3 meses."</span>
 }</pre>
-          </div>
-          <div class="tab-panel" data-tab="response">
+    </div>
+    <div class="tab-panel" data-tab="response">
             <pre><span class="cmt">// Sucesso 200</span>
 { <span class="key">"message"</span>: <span class="str">"Solicitação de troca enviada!"</span> }
 
@@ -1615,28 +1803,28 @@ GET /meus-plantoes/88/foto/checkout</pre>
 
 <span class="cmt">// 422 — substituto tem conflito de horário no mesmo dia</span>
 { <span class="key">"message"</span>: <span class="str">"O médico selecionado já possui plantão neste horário. Conflito de horário: Dr. Pedro Lima já possui plantão neste dia (15/05/2026) das 07:00 às 19:00 em Hospital Santa Cruz (Clínica Médica). Verifique a escala antes de prosseguir."</span> }</pre>
-          </div>
-        </div>
-      </div>
-      <!-- Reassumir plantão -->
-      <div class="endpoint" id="reassumir">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/plantoes/{id}/reassumir</span>
-          <span class="endpoint-desc">Cancelar troca e recuperar o próprio plantão</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px">
-            <span class="alert-icon">ℹ</span>
-            <div>Permite que o médico <strong>desfaça a solicitação de troca</strong> enquanto ela ainda está pendente, recuperando o plantão para si. A solicitação de troca muda para o status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelada</code> (histórico preservado) e o plantão retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Não requer body.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
-            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
-          </div>
-          <div class="tab-panel active" data-tab="response">
+    </div>
+  </div>
+</div>
+<!-- Reassumir plantão -->
+<div class="endpoint" id="reassumir">
+  <div class="endpoint-header" onclick="toggleEndpoint(this)">
+    <span class="method-pill post">POST</span>
+    <span class="endpoint-path">/api/v1/plantoes/{id}/reassumir</span>
+    <span class="endpoint-desc">Cancelar troca e recuperar o próprio plantão</span>
+    <span class="auth-badge">🔒 Bearer</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="endpoint-body">
+    <div class="alert alert-info" style="margin-top:12px">
+      <span class="alert-icon">ℹ</span>
+      <div>Permite que o médico <strong>desfaça a solicitação de troca</strong> enquanto ela ainda está pendente, recuperando o plantão para si. A solicitação de troca muda para o status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelada</code> (histórico preservado) e o plantão retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Não requer body.</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+      <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+    </div>
+    <div class="tab-panel active" data-tab="response">
             <pre><span class="cmt">// Sucesso 200</span>
 { <span class="key">"message"</span>: <span class="str">"Plantão reassumido com sucesso! A solicitação de troca foi cancelada."</span> }
 
@@ -1648,40 +1836,40 @@ GET /meus-plantoes/88/foto/checkout</pre>
 
 <span class="cmt">// 422 — status incompatível (não está aguardando troca)</span>
 { <span class="key">"message"</span>: <span class="str">"Este plantão não está aguardando troca e não pode ser reassumido."</span> }</pre>
-          </div>
-          <div class="tab-panel" data-tab="rules">
-            <table class="params-table" style="margin-top:8px">
-              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">Status exigido</td><td>O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">aguardando_troca</code>. Qualquer outro status retorna 422.</td></tr>
-              <tr><td class="param-name">Proprietário</td><td>Apenas o médico titular do plantão pode reassumir. Tentativa de outro médico retorna 404 (a query já filtra por <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">usuario_id</code>).</td></tr>
-              <tr><td class="param-name">Efeito na troca</td><td>A solicitação de troca com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> passa para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelada</code> e o campo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">respondido_em</code> é preenchido com o timestamp atual. O histórico é preservado e aparece na listagem de trocas.</td></tr>
-              <tr><td class="param-name">Efeito no plantão</td><td>Status volta para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. O médico pode novamente solicitar uma nova troca ou realizar check-in normalmente.</td></tr>
-              <tr><td class="param-name">Atomicidade</td><td>A exclusão da solicitação e a atualização do status do plantão ocorrem dentro de uma única <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <!-- Desistir do plantão -->
-      <div class="endpoint" id="desistir">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/plantoes/{id}/desistir</span>
-          <span class="endpoint-desc">Médico desiste do próprio plantão, devolvendo a vaga</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px">
-            <span class="alert-icon">ℹ</span>
-            <div>Não requer body. Devolve a vaga para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">disponivel</code> e cancela o plantão. A mensagem de retorno varia conforme o perfil do solicitante.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
-            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
-          </div>
-          <div class="tab-panel active" data-tab="response">
+    </div>
+    <div class="tab-panel" data-tab="rules">
+      <table class="params-table" style="margin-top:8px">
+        <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+        <tbody>
+        <tr><td class="param-name">Status exigido</td><td>O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">aguardando_troca</code>. Qualquer outro status retorna 422.</td></tr>
+        <tr><td class="param-name">Proprietário</td><td>Apenas o médico titular do plantão pode reassumir. Tentativa de outro médico retorna 404 (a query já filtra por <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">usuario_id</code>).</td></tr>
+        <tr><td class="param-name">Efeito na troca</td><td>A solicitação de troca com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> passa para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelada</code> e o campo <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">respondido_em</code> é preenchido com o timestamp atual. O histórico é preservado e aparece na listagem de trocas.</td></tr>
+        <tr><td class="param-name">Efeito no plantão</td><td>Status volta para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. O médico pode novamente solicitar uma nova troca ou realizar check-in normalmente.</td></tr>
+        <tr><td class="param-name">Atomicidade</td><td>A exclusão da solicitação e a atualização do status do plantão ocorrem dentro de uma única <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- Desistir do plantão -->
+<div class="endpoint" id="desistir">
+  <div class="endpoint-header" onclick="toggleEndpoint(this)">
+    <span class="method-pill post">POST</span>
+    <span class="endpoint-path">/api/v1/plantoes/{id}/desistir</span>
+    <span class="endpoint-desc">Médico desiste do próprio plantão, devolvendo a vaga</span>
+    <span class="auth-badge">🔒 Bearer</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="endpoint-body">
+    <div class="alert alert-info" style="margin-top:12px">
+      <span class="alert-icon">ℹ</span>
+      <div>Não requer body. Devolve a vaga para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">disponivel</code> e cancela o plantão. A mensagem de retorno varia conforme o perfil do solicitante.</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+      <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+    </div>
+    <div class="tab-panel active" data-tab="response">
             <pre><span class="cmt">// Sucesso 200 — médico desistindo do próprio plantão</span>
 { <span class="key">"message"</span>: <span class="str">"Você desistiu do plantão. A vaga foi devolvida."</span> }
 
@@ -1693,50 +1881,50 @@ GET /meus-plantoes/88/foto/checkout</pre>
 
 <span class="cmt">// 422 — status inválido</span>
 { <span class="key">"message"</span>: <span class="str">"Só é possível desistir de plantões com status Prevista."</span> }</pre>
-          </div>
-          <div class="tab-panel" data-tab="rules">
-            <table class="params-table" style="margin-top:8px">
-              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">Quem pode</td><td>O médico titular (<code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">perfil = user</code>) só pode desistir do próprio plantão. Admin, suporte e gestão podem cancelar qualquer plantão de qualquer médico.</td></tr>
-              <tr><td class="param-name">Status exigido</td><td>O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code> ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">assumido</code>. Qualquer outro status retorna 422.</td></tr>
-              <tr><td class="param-name">Efeito na vaga</td><td>A vaga retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">disponivel</code>, podendo ser assumida por outro médico.</td></tr>
-              <tr><td class="param-name">Efeito no plantão</td><td>O plantão passa para status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelado</code>. O histórico é preservado.</td></tr>
-              <tr><td class="param-name">Atomicidade</td><td>Atualização da vaga e do plantão dentro de <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+    </div>
+    <div class="tab-panel" data-tab="rules">
+      <table class="params-table" style="margin-top:8px">
+        <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+        <tbody>
+        <tr><td class="param-name">Quem pode</td><td>O médico titular (<code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">perfil = user</code>) só pode desistir do próprio plantão. Admin, suporte e gestão podem cancelar qualquer plantão de qualquer médico.</td></tr>
+        <tr><td class="param-name">Status exigido</td><td>O plantão deve estar com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code> ou <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">assumido</code>. Qualquer outro status retorna 422.</td></tr>
+        <tr><td class="param-name">Efeito na vaga</td><td>A vaga retorna ao status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">disponivel</code>, podendo ser assumida por outro médico.</td></tr>
+        <tr><td class="param-name">Efeito no plantão</td><td>O plantão passa para status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">cancelado</code>. O histórico é preservado.</td></tr>
+        <tr><td class="param-name">Atomicidade</td><td>Atualização da vaga e do plantão dentro de <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-      <!-- Atribuir médico a uma vaga (gestor/admin) -->
-      <div class="endpoint" id="atribuir-medico">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/vagas/{id}/atribuir</span>
-          <span class="endpoint-desc">Gestor/admin atribui diretamente um médico a uma vaga disponível</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px">
-            <span class="alert-icon">ℹ</span>
-            <div>Exclusiva para admin, suporte e gestão. Permite atribuir um médico a uma vaga sem depender de o próprio médico assumir pelo app. Também valida conflito de horário.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
-            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
-            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
-          </div>
-          <div class="tab-panel active" data-tab="body">
-            <table class="params-table">
-              <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">medico_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do usuário médico a ser atribuído. Deve ter <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">is_medico: true</code> e possuir a especialidade da vaga.</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="tab-panel" data-tab="response">
+<!-- Atribuir médico a uma vaga (gestor/admin) -->
+<div class="endpoint" id="atribuir-medico">
+  <div class="endpoint-header" onclick="toggleEndpoint(this)">
+    <span class="method-pill post">POST</span>
+    <span class="endpoint-path">/api/v1/vagas/{id}/atribuir</span>
+    <span class="endpoint-desc">Gestor/admin atribui diretamente um médico a uma vaga disponível</span>
+    <span class="auth-badge">🔒 Bearer</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="endpoint-body">
+    <div class="alert alert-info" style="margin-top:12px">
+      <span class="alert-icon">ℹ</span>
+      <div>Exclusiva para admin, suporte e gestão. Permite atribuir um médico a uma vaga sem depender de o próprio médico assumir pelo app. Também valida conflito de horário.</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'body')">Body</button>
+      <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+      <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+    </div>
+    <div class="tab-panel active" data-tab="body">
+      <table class="params-table">
+        <thead><tr><th>Campo</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+        <tbody>
+        <tr><td class="param-name">medico_id</td><td><span class="param-type">integer</span></td><td><span class="required">✱ obr.</span></td><td>ID do usuário médico a ser atribuído. Deve ter <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">is_medico: true</code> e possuir a especialidade da vaga.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tab-panel" data-tab="response">
             <pre><span class="cmt">// Sucesso 201</span>
 { <span class="key">"message"</span>: <span class="str">"Médico Dr. João Silva atribuído à vaga com sucesso!"</span> }
 
@@ -1757,85 +1945,85 @@ GET /meus-plantoes/88/foto/checkout</pre>
 
 <span class="cmt">// 422 — conflito de horário com outro plantão do médico</span>
 <span class="str">"Conflito de horário: Dr. João Silva já possui plantão neste dia (15/05/2026) das 07:00 às 19:00 em Hospital São Lucas (Clínica Médica). Verifique a escala antes de prosseguir."</span></pre>
-          </div>
-          <div class="tab-panel" data-tab="rules">
-            <table class="params-table" style="margin-top:8px">
-              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">Acesso</td><td>Restrito a <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">admin</code>, <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">suporte</code> e <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">gestao</code>.</td></tr>
-              <tr><td class="param-name">Sobreposição</td><td>Mesma lógica do endpoint de assumir: verifica conflito de horário antes de criar o plantão. Retorna mensagem amigável se houver bloqueio.</td></tr>
-              <tr><td class="param-name">Atomicidade</td><td>Criação do plantão e atualização da vaga para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">preenchida</code> dentro de <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+    </div>
+    <div class="tab-panel" data-tab="rules">
+      <table class="params-table" style="margin-top:8px">
+        <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+        <tbody>
+        <tr><td class="param-name">Acesso</td><td>Restrito a <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">admin</code>, <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">suporte</code> e <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">gestao</code>.</td></tr>
+        <tr><td class="param-name">Sobreposição</td><td>Mesma lógica do endpoint de assumir: verifica conflito de horário antes de criar o plantão. Retorna mensagem amigável se houver bloqueio.</td></tr>
+        <tr><td class="param-name">Atomicidade</td><td>Criação do plantão e atualização da vaga para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">preenchida</code> dentro de <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-      <!-- Confirmar realizado (gestão) -->
-      <div class="endpoint" id="confirmar-realizado">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/plantoes/{id}/realizado</span>
-          <span class="endpoint-desc">Gestor/admin marca plantão como realizado manualmente</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px">
-            <span class="alert-icon">ℹ</span>
-            <div>Exclusiva para admin, suporte e gestão. Usada quando o médico não fez check-out mas o plantão foi efetivamente realizado. Gestão só acessa plantões dos próprios contratos. Não requer body.</div>
-          </div>
-          <pre style="margin-top:12px"><span class="cmt">// Sucesso 200</span>
+<!-- Confirmar realizado (gestão) -->
+<div class="endpoint" id="confirmar-realizado">
+  <div class="endpoint-header" onclick="toggleEndpoint(this)">
+    <span class="method-pill post">POST</span>
+    <span class="endpoint-path">/api/v1/plantoes/{id}/realizado</span>
+    <span class="endpoint-desc">Gestor/admin marca plantão como realizado manualmente</span>
+    <span class="auth-badge">🔒 Bearer</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="endpoint-body">
+    <div class="alert alert-info" style="margin-top:12px">
+      <span class="alert-icon">ℹ</span>
+      <div>Exclusiva para admin, suporte e gestão. Usada quando o médico não fez check-out mas o plantão foi efetivamente realizado. Gestão só acessa plantões dos próprios contratos. Não requer body.</div>
+    </div>
+    <pre style="margin-top:12px"><span class="cmt">// Sucesso 200</span>
 { <span class="key">"message"</span>: <span class="str">"Plantão confirmado como realizado!"</span> }
 
 <span class="cmt">// 403 — perfil sem permissão</span>
 { <span class="key">"message"</span>: <span class="str">"Acesso não autorizado."</span> }</pre>
-        </div>
-      </div>
+  </div>
+</div>
 
-      <!-- Não compareceu (gestão) -->
-      <div class="endpoint" id="nao-compareceu">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/plantoes/{id}/nao-compareceu</span>
-          <span class="endpoint-desc">Gestor/admin marca plantão como não realizado, devolvendo a vaga</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-warn" style="margin-top:12px">
-            <span class="alert-icon">⚠</span>
-            <div>Exclusiva para admin, suporte e gestão. Gestão só acessa plantões dos próprios contratos. Marca o plantão como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">nao_realizada</code> e <strong>devolve a vaga para disponível</strong>. Não requer body.</div>
-          </div>
-          <pre style="margin-top:12px"><span class="cmt">// Sucesso 200</span>
+<!-- Não compareceu (gestão) -->
+<div class="endpoint" id="nao-compareceu">
+  <div class="endpoint-header" onclick="toggleEndpoint(this)">
+    <span class="method-pill post">POST</span>
+    <span class="endpoint-path">/api/v1/plantoes/{id}/nao-compareceu</span>
+    <span class="endpoint-desc">Gestor/admin marca plantão como não realizado, devolvendo a vaga</span>
+    <span class="auth-badge">🔒 Bearer</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="endpoint-body">
+    <div class="alert alert-warn" style="margin-top:12px">
+      <span class="alert-icon">⚠</span>
+      <div>Exclusiva para admin, suporte e gestão. Gestão só acessa plantões dos próprios contratos. Marca o plantão como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">nao_realizada</code> e <strong>devolve a vaga para disponível</strong>. Não requer body.</div>
+    </div>
+    <pre style="margin-top:12px"><span class="cmt">// Sucesso 200</span>
 { <span class="key">"message"</span>: <span class="str">"Plantão marcado como não realizado. Vaga devolvida como disponível."</span> }
 
 <span class="cmt">// 403 — perfil sem permissão</span>
 { <span class="key">"message"</span>: <span class="str">"Acesso não autorizado."</span> }</pre>
-        </div>
-      </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ TROCAS -->
+<div class="section">
+  <div class="section-title">Trocas</div>
+  <div class="section-desc">Gerenciamento de solicitações de troca recebidas pelo médico autenticado.</div>
+
+  <!-- Trocas pendentes -->
+  <div class="endpoint" id="trocas-pendentes">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-pill get">GET</span>
+      <span class="endpoint-path">/api/v1/trocas/pendentes</span>
+      <span class="endpoint-desc">Trocas aguardando resposta do médico</span>
+      <span class="auth-badge">🔒 Bearer</span>
+      <span class="chevron">▶</span>
     </div>
-
-    <!-- ══════════════════════════════════════════════════════════ TROCAS -->
-    <div class="section">
-      <div class="section-title">Trocas</div>
-      <div class="section-desc">Gerenciamento de solicitações de troca recebidas pelo médico autenticado.</div>
-
-      <!-- Trocas pendentes -->
-      <div class="endpoint" id="trocas-pendentes">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/api/v1/trocas/pendentes</span>
-          <span class="endpoint-desc">Trocas aguardando resposta do médico</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px">
-            <span class="alert-icon">ℹ</span>
-            <div>Retorna apenas trocas com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> direcionadas ao médico autenticado. Os campos <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo</code> e <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_observacao</code> serão <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">null</code> quando o solicitante não informar motivo.</div>
-          </div>
-          <pre style="margin-top:12px">[
+    <div class="endpoint-body">
+      <div class="alert alert-info" style="margin-top:12px">
+        <span class="alert-icon">ℹ</span>
+        <div>Retorna apenas trocas com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> direcionadas ao médico autenticado. Os campos <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo</code> e <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_observacao</code> serão <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">null</code> quando o solicitante não informar motivo.</div>
+      </div>
+      <pre style="margin-top:12px">[
   {
     <span class="key">"id"</span>: <span class="num">7</span>,
     <span class="key">"solicitante"</span>: {
@@ -1855,29 +2043,29 @@ GET /meus-plantoes/88/foto/checkout</pre>
   }
 ]
 <span class="cmt">// ↑ ATUALIZADO: motivo (string do nome do motivo ou null) e motivo_observacao (texto livre ou null)</span></pre>
-        </div>
-      </div>
+    </div>
+  </div>
 
-      <!-- Aceitar troca -->
-      <div class="endpoint" id="aceitar-troca">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/trocas/{id}/aceitar</span>
-          <span class="endpoint-desc">Aceitar solicitação de troca</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Não requer body. Cria automaticamente um novo plantão para o substituto e atualiza o status do plantão original para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">troca_com_colega</code>.</p>
-          <div class="alert alert-warn" style="margin-bottom:12px">
-            <span class="alert-icon">⚠</span>
-            <div><strong>Verificação de sobreposição no momento de aceitar</strong> — ao aceitar, o sistema re-verifica se o médico (o substituto que está aceitando) ainda não tem conflito de horário naquela data. Se entre a solicitação e o aceite o médico tiver assumido outro plantão conflitante, o aceite será bloqueado com 422. A verificação ignora o plantão original da troca para não gerar falso conflito consigo mesmo.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
-            <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
-          </div>
-          <div class="tab-panel active" data-tab="response">
+  <!-- Aceitar troca -->
+  <div class="endpoint" id="aceitar-troca">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-pill post">POST</span>
+      <span class="endpoint-path">/api/v1/trocas/{id}/aceitar</span>
+      <span class="endpoint-desc">Aceitar solicitação de troca</span>
+      <span class="auth-badge">🔒 Bearer</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body">
+      <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Não requer body. Cria automaticamente um novo plantão para o substituto e atualiza o status do plantão original para <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">troca_com_colega</code>.</p>
+      <div class="alert alert-warn" style="margin-bottom:12px">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Verificação de sobreposição no momento de aceitar</strong> — ao aceitar, o sistema re-verifica se o médico (o substituto que está aceitando) ainda não tem conflito de horário naquela data. Se entre a solicitação e o aceite o médico tiver assumido outro plantão conflitante, o aceite será bloqueado com 422. A verificação ignora o plantão original da troca para não gerar falso conflito consigo mesmo.</div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+        <button class="tab-btn" onclick="switchTab(this,'rules')">Regras</button>
+      </div>
+      <div class="tab-panel active" data-tab="response">
             <pre><span class="cmt">// Sucesso 200</span>
 { <span class="key">"message"</span>: <span class="str">"Troca aceita! O plantão está confirmado para você."</span> }
 
@@ -1886,62 +2074,62 @@ GET /meus-plantoes/88/foto/checkout</pre>
 
 <span class="cmt">// 404 — solicitação não encontrada ou não pertence ao médico</span>
 { <span class="key">"message"</span>: <span class="str">"No query results for model [SolicitacaoTroca]."</span> }</pre>
-          </div>
-          <div class="tab-panel" data-tab="rules">
-            <table class="params-table" style="margin-top:8px">
-              <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">Dono da solicitação</td><td>A query filtra por <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">substituto_id = usuario_id</code>, portanto apenas o médico que recebeu a solicitação pode aceitá-la.</td></tr>
-              <tr><td class="param-name">Status da solicitação</td><td>Apenas solicitações com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> podem ser aceitas.</td></tr>
-              <tr><td class="param-name">Sobreposição</td><td>Re-verifica conflito de horário no momento do aceite. O plantão original da troca é excluído da checagem para evitar falso positivo.</td></tr>
-              <tr><td class="param-name">Efeito</td><td>Plantão original → <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">troca_com_colega</code>. Novo plantão criado para o substituto com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Solicitação → <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">aceita</code>. Tudo em <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
-
-      <!-- Recusar troca -->
-      <div class="endpoint" id="recusar-troca">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/api/v1/trocas/{id}/recusar</span>
-          <span class="endpoint-desc">Recusar solicitação de troca</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Reverte o plantão original para status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>.</p>
-          <pre><span class="cmt">// Sucesso 200</span>
-{ <span class="key">"message"</span>: <span class="str">"Troca recusada."</span> }</pre>
-        </div>
+      <div class="tab-panel" data-tab="rules">
+        <table class="params-table" style="margin-top:8px">
+          <thead><tr><th>Condição</th><th>Detalhe</th></tr></thead>
+          <tbody>
+          <tr><td class="param-name">Dono da solicitação</td><td>A query filtra por <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">substituto_id = usuario_id</code>, portanto apenas o médico que recebeu a solicitação pode aceitá-la.</td></tr>
+          <tr><td class="param-name">Status da solicitação</td><td>Apenas solicitações com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">pendente</code> podem ser aceitas.</td></tr>
+          <tr><td class="param-name">Sobreposição</td><td>Re-verifica conflito de horário no momento do aceite. O plantão original da troca é excluído da checagem para evitar falso positivo.</td></tr>
+          <tr><td class="param-name">Efeito</td><td>Plantão original → <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">troca_com_colega</code>. Novo plantão criado para o substituto com status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>. Solicitação → <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">aceita</code>. Tudo em <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">DB::transaction</code>.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
+  </div>
 
-    <!-- ══════════════════════════════════════════════════════════ MOTIVOS DE TROCA -->
-    <div class="section">
-      <div class="section-title">Motivos de Troca</div>
-      <div class="section-desc">Lista de motivos pré-cadastrados que o médico pode selecionar ao solicitar uma troca de plantão. Os motivos são gerenciados pelo administrador no painel web.</div>
+  <!-- Recusar troca -->
+  <div class="endpoint" id="recusar-troca">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-pill post">POST</span>
+      <span class="endpoint-path">/api/v1/trocas/{id}/recusar</span>
+      <span class="endpoint-desc">Recusar solicitação de troca</span>
+      <span class="auth-badge">🔒 Bearer</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body">
+      <p style="color:var(--muted);font-size:13px;padding-top:8px;margin-bottom:12px">Reverte o plantão original para status <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">prevista</code>.</p>
+      <pre><span class="cmt">// Sucesso 200</span>
+{ <span class="key">"message"</span>: <span class="str">"Troca recusada."</span> }</pre>
+    </div>
+  </div>
+</div>
 
-      <!-- Listar motivos -->
-      <div class="endpoint" id="motivos-troca-listar">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/api/v1/motivos-troca</span>
-          <span class="endpoint-desc">Listar motivos de troca ativos</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px">
-            <span class="alert-icon">ℹ</span>
-            <div>Retorna apenas motivos com <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">ativo: true</code>. Use o <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">id</code> retornado como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_id</code> no body do <a href="#solicitar-troca" style="color:var(--accent)">POST /plantoes/{id}/solicitar-troca</a>. O campo é opcional — a troca pode ser solicitada sem motivo.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
-            <button class="tab-btn" onclick="switchTab(this,'notes')">Observações</button>
-          </div>
-          <div class="tab-panel active" data-tab="response">
+<!-- ══════════════════════════════════════════════════════════ MOTIVOS DE TROCA -->
+<div class="section">
+  <div class="section-title">Motivos de Troca</div>
+  <div class="section-desc">Lista de motivos pré-cadastrados que o médico pode selecionar ao solicitar uma troca de plantão. Os motivos são gerenciados pelo administrador no painel web.</div>
+
+  <!-- Listar motivos -->
+  <div class="endpoint" id="motivos-troca-listar">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-pill get">GET</span>
+      <span class="endpoint-path">/api/v1/motivos-troca</span>
+      <span class="endpoint-desc">Listar motivos de troca ativos</span>
+      <span class="auth-badge">🔒 Bearer</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="alert alert-info" style="margin-top:12px">
+        <span class="alert-icon">ℹ</span>
+        <div>Retorna apenas motivos com <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">ativo: true</code>. Use o <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">id</code> retornado como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_id</code> no body do <a href="#solicitar-troca" style="color:var(--accent)">POST /plantoes/{id}/solicitar-troca</a>. O campo é opcional — a troca pode ser solicitada sem motivo.</div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'response')">Resposta</button>
+        <button class="tab-btn" onclick="switchTab(this,'notes')">Observações</button>
+      </div>
+      <div class="tab-panel active" data-tab="response">
             <pre><span class="cmt">// Sucesso 200 — array direto, sem paginação</span>
 [
   {
@@ -1969,59 +2157,59 @@ GET /meus-plantoes/88/foto/checkout</pre>
     <span class="key">"nome"</span>: <span class="str">"Outro"</span>
   }
 ]</pre>
-          </div>
-          <div class="tab-panel" data-tab="notes">
-            <table class="params-table" style="margin-top:8px">
-              <thead><tr><th>Campo</th><th>Tipo</th><th>Descrição</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">id</td><td><span class="param-type">integer</span></td><td>Usar como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_id</code> ao solicitar troca</td></tr>
-              <tr><td class="param-name">nome</td><td><span class="param-type">string</span></td><td>Texto exibido ao médico no seletor da interface</td></tr>
-              </tbody>
-            </table>
-            <div class="alert alert-warn" style="margin-top:12px">
-              <span class="alert-icon">⚠</span>
-              <div>Recomenda-se buscar esta lista dinamicamente ao abrir o fluxo de troca, pois o administrador pode adicionar, remover ou inativar motivos a qualquer momento pelo painel web.</div>
-            </div>
-          </div>
+      </div>
+      <div class="tab-panel" data-tab="notes">
+        <table class="params-table" style="margin-top:8px">
+          <thead><tr><th>Campo</th><th>Tipo</th><th>Descrição</th></tr></thead>
+          <tbody>
+          <tr><td class="param-name">id</td><td><span class="param-type">integer</span></td><td>Usar como <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">motivo_id</code> ao solicitar troca</td></tr>
+          <tr><td class="param-name">nome</td><td><span class="param-type">string</span></td><td>Texto exibido ao médico no seletor da interface</td></tr>
+          </tbody>
+        </table>
+        <div class="alert alert-warn" style="margin-top:12px">
+          <span class="alert-icon">⚠</span>
+          <div>Recomenda-se buscar esta lista dinamicamente ao abrir o fluxo de troca, pois o administrador pode adicionar, remover ou inativar motivos a qualquer momento pelo painel web.</div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- ══════════════════════════════════════════════════════════ MÉDICOS -->
-    <div class="section">
-      <div class="section-title">Médicos</div>
-      <div class="section-desc">Listagem de médicos do sistema. Acesso restrito a admin, suporte e gestão — exceto a rota <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:2px 6px;border-radius:3px">por-especialidade</code>, disponível para qualquer usuário autenticado.</div>
+<!-- ══════════════════════════════════════════════════════════ MÉDICOS -->
+<div class="section">
+  <div class="section-title">Médicos</div>
+  <div class="section-desc">Listagem de médicos do sistema. Acesso restrito a admin, suporte e gestão — exceto a rota <code style="font-family:var(--mono);font-size:12px;background:#1a2236;padding:2px 6px;border-radius:3px">por-especialidade</code>, disponível para qualquer usuário autenticado.</div>
 
-      <!-- Listar médicos -->
-      <div class="endpoint" id="medicos-index">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/api/v1/medicos</span>
-          <span class="endpoint-desc">Listar todos os médicos com dados completos</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-warn" style="margin-top:12px">
-            <span class="alert-icon">⚠</span>
-            <div>Acesso restrito a <strong>admin, suporte e gestão</strong>. Médico com perfil <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">user</code> recebe <strong>403</strong>.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
-            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
-          </div>
-          <div class="tab-panel active" data-tab="params">
-            <table class="params-table">
-              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">ativo</td><td><span class="param-type">boolean</span></td><td><span class="optional">opc.</span></td><td>Filtrar por status ativo/inativo. Omitir retorna todos.</td></tr>
-              <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar médicos que possuem essa especialidade</td></tr>
-              <tr><td class="param-name">busca</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Busca por nome ou e-mail</td></tr>
-              <tr><td class="param-name">per_page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Itens por página. Default: 50</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="tab-panel" data-tab="response">
+  <!-- Listar médicos -->
+  <div class="endpoint" id="medicos-index">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-pill get">GET</span>
+      <span class="endpoint-path">/api/v1/medicos</span>
+      <span class="endpoint-desc">Listar todos os médicos com dados completos</span>
+      <span class="auth-badge">🔒 Bearer</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="alert alert-warn" style="margin-top:12px">
+        <span class="alert-icon">⚠</span>
+        <div>Acesso restrito a <strong>admin, suporte e gestão</strong>. Médico com perfil <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">user</code> recebe <strong>403</strong>.</div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
+        <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+      </div>
+      <div class="tab-panel active" data-tab="params">
+        <table class="params-table">
+          <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+          <tbody>
+          <tr><td class="param-name">ativo</td><td><span class="param-type">boolean</span></td><td><span class="optional">opc.</span></td><td>Filtrar por status ativo/inativo. Omitir retorna todos.</td></tr>
+          <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar médicos que possuem essa especialidade</td></tr>
+          <tr><td class="param-name">busca</td><td><span class="param-type">string</span></td><td><span class="optional">opc.</span></td><td>Busca por nome ou e-mail</td></tr>
+          <tr><td class="param-name">per_page</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Itens por página. Default: 50</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-panel" data-tab="response">
             <pre>{
   <span class="key">"data"</span>: [
     {
@@ -2052,37 +2240,37 @@ GET /meus-plantoes/88/foto/checkout</pre>
   <span class="key">"pagina"</span>: <span class="num">1</span>,
   <span class="key">"paginas"</span>: <span class="num">2</span>
 }</pre>
-          </div>
-        </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Por especialidade -->
-      <div class="endpoint" id="medicos-por-especialidade">
-        <div class="endpoint-header" onclick="toggleEndpoint(this)">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/api/v1/medicos/por-especialidade</span>
-          <span class="endpoint-desc">Médicos disponíveis para troca</span>
-          <span class="auth-badge">🔒 Bearer</span>
-          <span class="chevron">▶</span>
-        </div>
-        <div class="endpoint-body">
-          <div class="alert alert-info" style="margin-top:12px">
-            <span class="alert-icon">ℹ</span>
-            <div>Disponível para qualquer usuário autenticado. Retorna médicos ativos que possuem a especialidade informada, <strong>excluindo o próprio usuário logado</strong>. Se <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">especialidade_id</code> não for informado, usa todas as especialidades do médico logado. Ideal para popular o seletor de substituto na solicitação de troca.</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
-            <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
-          </div>
-          <div class="tab-panel active" data-tab="params">
-            <table class="params-table">
-              <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
-              <tbody>
-              <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por especialidade específica. Se omitido, usa as especialidades do médico logado.</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="tab-panel" data-tab="response">
+  <!-- Por especialidade -->
+  <div class="endpoint" id="medicos-por-especialidade">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-pill get">GET</span>
+      <span class="endpoint-path">/api/v1/medicos/por-especialidade</span>
+      <span class="endpoint-desc">Médicos disponíveis para troca</span>
+      <span class="auth-badge">🔒 Bearer</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="alert alert-info" style="margin-top:12px">
+        <span class="alert-icon">ℹ</span>
+        <div>Disponível para qualquer usuário autenticado. Retorna médicos ativos que possuem a especialidade informada, <strong>excluindo o próprio usuário logado</strong>. Se <code style="font-family:var(--mono);font-size:11px;background:#1a2236;padding:1px 5px;border-radius:3px">especialidade_id</code> não for informado, usa todas as especialidades do médico logado. Ideal para popular o seletor de substituto na solicitação de troca.</div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'params')">Query Params</button>
+        <button class="tab-btn" onclick="switchTab(this,'response')">Resposta</button>
+      </div>
+      <div class="tab-panel active" data-tab="params">
+        <table class="params-table">
+          <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Req.</th><th>Descrição</th></tr></thead>
+          <tbody>
+          <tr><td class="param-name">especialidade_id</td><td><span class="param-type">integer</span></td><td><span class="optional">opc.</span></td><td>Filtrar por especialidade específica. Se omitido, usa as especialidades do médico logado.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-panel" data-tab="response">
             <pre><span class="cmt">// Array direto (sem paginação)</span>
 [
   {
@@ -2100,12 +2288,12 @@ GET /meus-plantoes/88/foto/checkout</pre>
     ]
   }
 ]</pre>
-          </div>
-        </div>
       </div>
     </div>
+  </div>
+</div>
 
-  </main>
+</main>
 </div>
 
 <script>
